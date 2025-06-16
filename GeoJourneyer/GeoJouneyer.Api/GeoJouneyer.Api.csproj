@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GeoJourneyer.Application\GeoJourneyer.Application.csproj" />
+    <ProjectReference Include="..\GeoJourneyer.Domain\GeoJourneyer.Domain.csproj" />
+    <ProjectReference Include="..\GeoJourneyer.Infrastructure\GeoJourneyer.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

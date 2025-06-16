@@ -3,9 +3,78 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36203.30 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.App", "GeoJourneyer.App\GeoJourneyer.App\GeoJourneyer.App.csproj", "{2818679C-331B-4145-AA6A-5BC7EEE77E75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.App.Shared", "GeoJourneyer.App\GeoJourneyer.App.Shared\GeoJourneyer.App.Shared.csproj", "{C790FB5C-1181-4BA3-BB38-FB909EBD4389}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.App.Web", "GeoJourneyer.App\GeoJourneyer.App.Web\GeoJourneyer.App.Web.csproj", "{31360ABE-D104-4D51-A25F-8499B888D08B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.App.Web.Client", "GeoJourneyer.App\GeoJourneyer.App.Web.Client\GeoJourneyer.App.Web.Client.csproj", "{D8898EAB-084F-437F-A37D-3E20278849D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJouneyer.Api", "GeoJouneyer.Api\GeoJouneyer.Api.csproj", "{805A5C04-B1FF-4B99-9105-C7718FD499A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.Domain", "GeoJourneyer.Domain\GeoJourneyer.Domain.csproj", "{044A71FE-25A3-454C-98D8-0F34351A36B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.Application", "GeoJourneyer.Application\GeoJourneyer.Application.csproj", "{62BB3288-78E6-40F2-BCE0-35D129426854}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.Infrastructure", "GeoJourneyer.Infrastructure\GeoJourneyer.Infrastructure.csproj", "{81A3F7D3-440C-4184-BB58-F68F6A9671B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{D06148BB-37EA-4B1A-88B3-D95E6D94224B}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C790FB5C-1181-4BA3-BB38-FB909EBD4389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C790FB5C-1181-4BA3-BB38-FB909EBD4389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C790FB5C-1181-4BA3-BB38-FB909EBD4389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C790FB5C-1181-4BA3-BB38-FB909EBD4389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31360ABE-D104-4D51-A25F-8499B888D08B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31360ABE-D104-4D51-A25F-8499B888D08B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31360ABE-D104-4D51-A25F-8499B888D08B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31360ABE-D104-4D51-A25F-8499B888D08B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8898EAB-084F-437F-A37D-3E20278849D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8898EAB-084F-437F-A37D-3E20278849D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8898EAB-084F-437F-A37D-3E20278849D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8898EAB-084F-437F-A37D-3E20278849D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{805A5C04-B1FF-4B99-9105-C7718FD499A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{805A5C04-B1FF-4B99-9105-C7718FD499A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{805A5C04-B1FF-4B99-9105-C7718FD499A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{805A5C04-B1FF-4B99-9105-C7718FD499A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{044A71FE-25A3-454C-98D8-0F34351A36B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{044A71FE-25A3-454C-98D8-0F34351A36B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{044A71FE-25A3-454C-98D8-0F34351A36B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{044A71FE-25A3-454C-98D8-0F34351A36B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62BB3288-78E6-40F2-BCE0-35D129426854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62BB3288-78E6-40F2-BCE0-35D129426854}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62BB3288-78E6-40F2-BCE0-35D129426854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62BB3288-78E6-40F2-BCE0-35D129426854}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2818679C-331B-4145-AA6A-5BC7EEE77E75} = {D06148BB-37EA-4B1A-88B3-D95E6D94224B}
+		{C790FB5C-1181-4BA3-BB38-FB909EBD4389} = {D06148BB-37EA-4B1A-88B3-D95E6D94224B}
+		{31360ABE-D104-4D51-A25F-8499B888D08B} = {D06148BB-37EA-4B1A-88B3-D95E6D94224B}
+		{D8898EAB-084F-437F-A37D-3E20278849D3} = {D06148BB-37EA-4B1A-88B3-D95E6D94224B}
+		{805A5C04-B1FF-4B99-9105-C7718FD499A0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{044A71FE-25A3-454C-98D8-0F34351A36B0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{62BB3288-78E6-40F2-BCE0-35D129426854} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{81A3F7D3-440C-4184-BB58-F68F6A9671B7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {091C9938-5D77-418A-A718-99C2ED04F825}
