@@ -16,4 +16,8 @@
     <ProjectReference Include="..\GeoJourneyer.Domain\GeoJourneyer.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

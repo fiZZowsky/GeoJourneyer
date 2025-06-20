@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace GeoJourneyer.Infrastructure;
+namespace GeoJourneyer.Infrastructure.Persistance;
 
 public class DatabaseContext
 {

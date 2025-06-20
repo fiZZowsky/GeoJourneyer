@@ -12,4 +12,9 @@
     <ProjectReference Include="..\GeoJourneyer.Infrastructure\GeoJourneyer.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

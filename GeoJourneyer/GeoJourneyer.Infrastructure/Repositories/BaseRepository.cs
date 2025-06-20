@@ -1,10 +1,8 @@
-﻿using Dapper;
-using Microsoft.Data.Sqlite;
-using GeoJourneyer.Domain.Queries;
+﻿using GeoJourneyer.Infrastructure.Persistance;
 
-namespace GeoJourneyer.Infrastructure;
+namespace GeoJourneyer.Infrastructure.Repositories;
 
-public abstract class BaseRepository<T>
+public abstract class BaseRepository<T> : IRepository<T>
 {
     protected readonly DatabaseContext Context;
     protected abstract string TableName { get; }
@@ -14,7 +12,7 @@ public abstract class BaseRepository<T>
         Context = context;
     }
 
-    public virtual IEnumerable<T> GetAll(BaseQuery? query = null)
+    public virtual IEnumerable<T> GetAll(BaseQuery query = null)
     {
         using var connection = Context.CreateConnection();
         var sql = $"SELECT * FROM {TableName}";

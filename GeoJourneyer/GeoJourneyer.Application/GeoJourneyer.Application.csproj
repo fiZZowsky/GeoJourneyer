@@ -10,4 +10,10 @@
     <ProjectReference Include="..\GeoJourneyer.Domain\GeoJourneyer.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappings\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>
