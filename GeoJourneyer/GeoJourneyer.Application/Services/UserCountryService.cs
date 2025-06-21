@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GeoJourneyer.Application.Services.Interfaces;
 
-namespace GeoJourneyer.Application.Services
+namespace GeoJourneyer.Application.Services;
+
+public class UserCountryService : IUserCountryService
 {
-    internal class UserCountryService
+    private readonly IUserCountryRepository _repository;
+
+    public UserCountryService(IUserCountryRepository repository)
     {
+        _repository = repository;
     }
+
+    public IEnumerable<UserCountry> GetUserCountries(int userId)
+        => _repository.GetAll(new UserCountryQuery { UserId = userId });
+
+    public int AddUserCountry(UserCountry country) => _repository.Insert(country);
+
+    public void UpdateUserCountry(UserCountry country) => _repository.Update(country);
+}
+
+public class UserCountryQuery : BaseQuery
+{
+    public int? UserId { get; set; }
 }

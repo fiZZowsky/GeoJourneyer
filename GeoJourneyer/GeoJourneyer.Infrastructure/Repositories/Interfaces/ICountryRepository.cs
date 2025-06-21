@@ -3,6 +3,6 @@ using GeoJourneyer.Infrastructure.Repositories;
 
 namespace GeoJourneyer.Application.Repositories;
 
-public interface IUserCountryRepository : IBaseRepository<UserCountry>
+public interface ICountryRepository : IBaseRepository<Country>
 {
 }

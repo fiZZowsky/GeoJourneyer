@@ -2,7 +2,7 @@
 
 namespace GeoJourneyer.Infrastructure.Repositories;
 
-public abstract class BaseRepository<T> : IRepository<T>
+public abstract class BaseRepository<T> : IBaseRepository<T>
 {
     protected readonly DatabaseContext Context;
     protected abstract string TableName { get; }

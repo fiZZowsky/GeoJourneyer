@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GeoJourneyer.Domain.Entities;
 
-namespace GeoJourneyer.Application.Services.Interfaces
+namespace GeoJourneyer.Application.Services.Interfaces;
+
+public interface IUserCountryService
 {
-    internal interface IUserCountryService
-    {
-    }
+    IEnumerable<UserCountry> GetUserCountries(int userId);
+    int AddUserCountry(UserCountry country);
+    void UpdateUserCountry(UserCountry country);
 }

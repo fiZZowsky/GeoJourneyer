@@ -3,6 +3,7 @@ using GeoJourneyer.Infrastructure.Repositories;
 
 namespace GeoJourneyer.Application.Repositories;
 
-public interface IUserCountryRepository : IBaseRepository<UserCountry>
+public interface IPlaceRepository : IBaseRepository<Place>
 {
+    IEnumerable<Place> GetByCountry(int countryId);
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
 
 namespace GeoJourneyer.Infrastructure.Persistance;
 
@@ -16,6 +17,19 @@ public class DatabaseContext
     {
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
+        var commands = new[]
+        {
+            "CREATE TABLE IF NOT EXISTS Countries (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, IsoCode TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS Places (Id INTEGER PRIMARY KEY AUTOINCREMENT, CountryId INTEGER NOT NULL, Name TEXT NOT NULL, Latitude REAL, Longitude REAL, Description TEXT)",
+            "CREATE TABLE IF NOT EXISTS UserCountries (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, Country TEXT NOT NULL, Status INTEGER)",
+            "CREATE TABLE IF NOT EXISTS TravelPlans (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, CountryId INTEGER NOT NULL, Name TEXT)",
+            "CREATE TABLE IF NOT EXISTS TravelPlanStops (Id INTEGER PRIMARY KEY AUTOINCREMENT, TravelPlanId INTEGER NOT NULL, PlaceId INTEGER NOT NULL, [Order] INTEGER)"
+        };
+
+        foreach (var cmd in commands)
+        {
+            connection.Execute(cmd);
+        }
     }
 
     public SqliteConnection CreateConnection()

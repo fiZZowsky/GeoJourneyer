@@ -1,4 +1,5 @@
-﻿namespace GeoJourneyer.Infrastructure.Repositories;
+﻿using GeoJourneyer.Domain.Queries;
+namespace GeoJourneyer.Application.Repositories;
 
 public interface IBaseRepository<T>
 {
