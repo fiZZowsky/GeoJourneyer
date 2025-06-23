@@ -1,6 +1,7 @@
-﻿using GeoJourneyer.Domain;
+﻿using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Domain;
 
-namespace GeoJourneyer.Application.Repositories;
+namespace GeoJourneyer.Infrastructure.Repositories;
 
 public interface IUserCountryRepository : IBaseRepository<UserCountry>
 {

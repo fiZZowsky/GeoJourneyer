@@ -1,7 +1,7 @@
-﻿using GeoJourneyer.Domain.Entities;
-using GeoJourneyer.Infrastructure.Repositories;
+﻿using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Domain.Entities;
 
-namespace GeoJourneyer.Application.Repositories;
+namespace GeoJourneyer.Infrastructure.Repositories;
 
 public interface ITravelPlanRepository : IBaseRepository<TravelPlan>
 {

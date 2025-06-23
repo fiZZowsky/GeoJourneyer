@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeoJourneyer.Domain\GeoJourneyer.Domain.csproj" />
+    <ProjectReference Include="..\GeoJourneyer.Infrastructure\GeoJourneyer.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

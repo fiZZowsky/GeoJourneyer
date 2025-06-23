@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GeoJourneyer.Application.Services.Interfaces;
+﻿using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
-using GeoJourneyer.Application.Repositories;
 using GeoJourneyer.Domain.Queries;
+using GeoJourneyer.Infrastructure.Repositories;
 
 namespace GeoJourneyer.Application.Services;
 
 public class TravelPlanService : ITravelPlanService
 {
-    private readonly ITravelPlanRepository _planRepository;
+    private readonly TravelPlanRepository _planRepository;
     private readonly IPlaceRepository _placeRepository;
 
     public TravelPlanService(ITravelPlanRepository planRepository, IPlaceRepository placeRepository)
@@ -23,6 +21,11 @@ public class TravelPlanService : ITravelPlanService
 
     public int CreatePlan(TravelPlan plan, IEnumerable<int> placeIds)
     {
+        if (placeIds == null || !placeIds.Any())
+        {
+            throw new ArgumentException("At least one place is required", nameof(placeIds));
+        }
+
         var id = _planRepository.Insert(plan);
         var order = 0;
         var stops = placeIds.Select(pid => new TravelPlanStop

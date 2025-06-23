@@ -25,7 +25,14 @@ public class TravelPlansController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] TravelPlanDto dto)
     {
-        var id = _service.CreatePlan(new TravelPlan { UserId = dto.UserId, CountryId = dto.CountryId, Name = dto.Name }, dto.PlaceIds);
+        if (dto.PlaceIds == null || !dto.PlaceIds.Any())
+        {
+            return BadRequest("No places specified");
+        }
+
+        var id = _service.CreatePlan(
+            new TravelPlan { UserId = dto.UserId, CountryId = dto.CountryId, Name = dto.Name },
+            dto.PlaceIds);
         return Ok(id);
     }
 
