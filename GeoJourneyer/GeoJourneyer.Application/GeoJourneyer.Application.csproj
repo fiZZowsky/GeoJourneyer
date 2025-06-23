@@ -12,8 +12,11 @@
 
   <ItemGroup>
     <Folder Include="Mappings\" />
-    <Folder Include="Extensions\" />
     <Folder Include="DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

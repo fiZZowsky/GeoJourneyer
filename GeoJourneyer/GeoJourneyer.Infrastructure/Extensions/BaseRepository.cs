@@ -1,4 +1,7 @@
-﻿using GeoJourneyer.Infrastructure.Persistance;
+﻿using Dapper;
+using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Domain.Queries;
+using GeoJourneyer.Infrastructure.Persistance;
 
 namespace GeoJourneyer.Infrastructure.Repositories;
 

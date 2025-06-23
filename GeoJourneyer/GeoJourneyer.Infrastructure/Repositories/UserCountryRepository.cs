@@ -1,5 +1,6 @@
-﻿using GeoJourneyer.Infrastructure.Persistance;
-using GeoJourneyer.Infrastructure.Repositories.Interfaces;
+﻿using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Domain;
+using GeoJourneyer.Infrastructure.Persistance;
 
 namespace GeoJourneyer.Infrastructure.Repositories;
 

@@ -1,5 +1,4 @@
-﻿using GeoJourneyer.Domain.Entities;
-using GeoJourneyer.Infrastructure.Repositories;
+﻿using GeoJourneyer.Domain;
 
 namespace GeoJourneyer.Application.Repositories;
 

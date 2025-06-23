@@ -1,10 +1,8 @@
-using GeoJourneyer.Application.Services;
 using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
-using GeoJourneyer.Infrastructure;
-using GeoJourneyer.Infrastructure.Repositories;
 using GeoJourneyer.Infrastructure.Persistance;
-using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Application.Extensions;
+using GeoJourneyer.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +10,9 @@ var connectionString = builder.Configuration.GetConnectionString("Default") ??
     $"Data Source={Path.Combine(AppContext.BaseDirectory, "app.db")}";
 var context = new DatabaseContext(connectionString);
 builder.Services.AddSingleton(context);
-builder.Services.AddScoped<ICountryRepository, CountryRepository>();
-builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
-builder.Services.AddScoped<IUserCountryRepository, UserCountryRepository>();
-builder.Services.AddScoped<ITravelPlanRepository, TravelPlanRepository>();
-builder.Services.AddScoped<ICountryService, CountryService>();
-builder.Services.AddScoped<IPlaceService, PlaceService>();
-builder.Services.AddScoped<IUserCountryService, UserCountryService>();
-builder.Services.AddScoped<ITravelPlanService, TravelPlanService>();
+
+builder.Services.AddRepositories();
+builder.Services.AddServices();
 
 var app = builder.Build();
 
