@@ -1,0 +1,29 @@
+﻿@page "/countries"
+@inject ApiProxyClient ApiClient
+
+<PageTitle>Countries</PageTitle>
+
+<h1>Countries</h1>
+
+@if (countries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var country in countries)
+        {
+            <li>@country.Name (@country.IsoCode)</li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<CountryDto>? countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await ApiClient.GetCountriesAsync();
+    }
+}
