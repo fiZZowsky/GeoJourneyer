@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GeoJourneyer.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/places")]
 public class PlacesController : ControllerBase
 {
     private readonly IPlaceService _service;

@@ -6,7 +6,7 @@ using System.Linq;
 namespace GeoJourneyer.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/travel-plans")]
 public class TravelPlansController : ControllerBase
 {
     private readonly ITravelPlanService _service;

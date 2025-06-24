@@ -14,19 +14,19 @@ public class ApiProxyClient
 
     public async Task<IEnumerable<CountryDto>?> GetCountriesAsync()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<CountryDto>>("countries");
+        return await _httpClient.GetFromJsonAsync<IEnumerable<CountryDto>>("api/countries");
     }
 
     public async Task<int?> RegisterAsync(string username, string password)
     {
-        var resp = await _httpClient.PostAsJsonAsync("auth/register", new { Username = username, Password = password });
+        var resp = await _httpClient.PostAsJsonAsync("api/auth/register", new { Username = username, Password = password });
         if (!resp.IsSuccessStatusCode) return null;
         return await resp.Content.ReadFromJsonAsync<int>();
     }
 
     public async Task<int?> LoginAsync(string username, string password)
     {
-        var resp = await _httpClient.PostAsJsonAsync("auth/login", new { Username = username, Password = password });
+        var resp = await _httpClient.PostAsJsonAsync("api/auth/login", new { Username = username, Password = password });
         if (!resp.IsSuccessStatusCode) return null;
         return await resp.Content.ReadFromJsonAsync<int>();
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GeoJourneyer.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/countries")]
 public class CountriesController : ControllerBase
 {
     private readonly ICountryService _service;
