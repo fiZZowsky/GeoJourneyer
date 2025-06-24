@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeoJourneyer.Application\GeoJourneyer.Application.csproj" />
     <ProjectReference Include="..\GeoJourneyer.Domain\GeoJourneyer.Domain.csproj" />
   </ItemGroup>
 

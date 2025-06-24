@@ -12,5 +12,6 @@ public static class ServicesCollectionExtension
         services.AddScoped<IPlaceService, PlaceService>();
         services.AddScoped<IUserCountryService, UserCountryService>();
         services.AddScoped<ITravelPlanService, TravelPlanService>();
+        services.AddScoped<IUserService, UserService>();
     }
 }

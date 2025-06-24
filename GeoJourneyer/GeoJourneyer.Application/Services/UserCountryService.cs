@@ -1,4 +1,7 @@
 ﻿using GeoJourneyer.Application.Services.Interfaces;
+using GeoJourneyer.Domain;
+using GeoJourneyer.Domain.Queries;
+using GeoJourneyer.Infrastructure.Repositories;
 
 namespace GeoJourneyer.Application.Services;
 
@@ -17,9 +20,4 @@ public class UserCountryService : IUserCountryService
     public int AddUserCountry(UserCountry country) => _repository.Insert(country);
 
     public void UpdateUserCountry(UserCountry country) => _repository.Update(country);
-}
-
-public class UserCountryQuery : BaseQuery
-{
-    public int? UserId { get; set; }
 }

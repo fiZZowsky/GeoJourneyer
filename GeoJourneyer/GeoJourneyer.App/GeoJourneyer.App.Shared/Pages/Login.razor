@@ -1,0 +1,36 @@
+﻿@page "/login"
+@inject ApiProxyClient ApiClient
+
+<h1>Login</h1>
+@if (!string.IsNullOrEmpty(Message))
+{
+    <p>@Message</p>
+}
+<input @bind="username" placeholder="Username" />
+<input type="password" @bind="password" placeholder="Password" />
+<button @onclick="OnLogin">Login</button>
+
+<h2>Register</h2>
+<input @bind="regUsername" placeholder="Username" />
+<input type="password" @bind="regPassword" placeholder="Password" />
+<button @onclick="OnRegister">Register</button>
+
+@code {
+    private string? Message;
+    private string username = string.Empty;
+    private string password = string.Empty;
+    private string regUsername = string.Empty;
+    private string regPassword = string.Empty;
+
+    private async Task OnLogin()
+    {
+        var id = await ApiClient.LoginAsync(username, password);
+        Message = id == null ? "Invalid credentials" : $"Logged in as user {id}";
+    }
+
+    private async Task OnRegister()
+    {
+        var id = await ApiClient.RegisterAsync(regUsername, regPassword);
+        Message = id == null ? "Registration failed" : $"Registered user {id}";
+    }
+}

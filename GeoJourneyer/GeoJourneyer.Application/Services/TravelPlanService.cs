@@ -7,7 +7,7 @@ namespace GeoJourneyer.Application.Services;
 
 public class TravelPlanService : ITravelPlanService
 {
-    private readonly TravelPlanRepository _planRepository;
+    private readonly ITravelPlanRepository _planRepository;
     private readonly IPlaceRepository _placeRepository;
 
     public TravelPlanService(ITravelPlanRepository planRepository, IPlaceRepository placeRepository)

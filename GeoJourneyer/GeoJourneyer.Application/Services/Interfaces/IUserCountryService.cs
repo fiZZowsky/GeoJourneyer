@@ -1,4 +1,4 @@
-﻿using GeoJourneyer.Domain.Entities;
+﻿using GeoJourneyer.Domain;
 
 namespace GeoJourneyer.Application.Services.Interfaces;
 

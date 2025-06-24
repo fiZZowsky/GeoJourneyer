@@ -12,5 +12,6 @@ public static class RepositoryCollectionExtension
         services.AddScoped<IPlaceRepository, PlaceRepository>();
         services.AddScoped<IUserCountryRepository, UserCountryRepository>();
         services.AddScoped<ITravelPlanRepository, TravelPlanRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

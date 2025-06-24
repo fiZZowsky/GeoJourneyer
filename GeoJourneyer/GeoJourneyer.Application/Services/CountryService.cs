@@ -1,6 +1,6 @@
 ﻿using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
-using GeoJourneyer.Application.Repositories;
+using GeoJourneyer.Infrastructure.Repositories;
 
 namespace GeoJourneyer.Application.Services;
 

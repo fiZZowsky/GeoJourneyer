@@ -1,4 +1,6 @@
-﻿namespace GeoJourneyer.Domain;
+﻿using GeoJourneyer.Domain.Entities;
+
+namespace GeoJourneyer.Domain;
 
 public class UserCountry : BaseEntity
 {
