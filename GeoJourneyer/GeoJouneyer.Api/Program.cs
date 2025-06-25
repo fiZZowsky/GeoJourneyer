@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("Default") ??
-    $"Data Source={Path.Combine(AppContext.BaseDirectory, "app.db")}";
+    $"Data Source={Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "app.db")}";
 var context = new DatabaseContext(connectionString);
 builder.Services.AddSingleton(context);
 
