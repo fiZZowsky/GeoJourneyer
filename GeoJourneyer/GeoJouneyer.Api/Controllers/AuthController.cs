@@ -17,16 +17,16 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] UserDto dto)
     {
-        var id = _service.Register(dto.Username, dto.Password);
-        return Ok(id);
+        var token = _service.Register(dto.Username, dto.Password);
+        return Ok(token);
     }
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserDto dto)
     {
-        var id = _service.Authenticate(dto.Username, dto.Password);
-        if (id == null) return Unauthorized();
-        return Ok(id.Value);
+        var token = _service.Authenticate(dto.Username, dto.Password);
+        if (token == null) return Unauthorized();
+        return Ok(token);
     }
 
     public record UserDto(string Username, string Password);

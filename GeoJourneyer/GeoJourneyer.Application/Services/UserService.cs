@@ -9,23 +9,26 @@ namespace GeoJourneyer.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
+    private readonly ITokenService _tokenService;
 
-    public UserService(IUserRepository repository)
+    public UserService(IUserRepository repository, ITokenService tokenService)
     {
         _repository = repository;
+        _tokenService = tokenService;
     }
 
-    public int Register(string username, string password)
+    public string Register(string username, string password)
     {
         var user = new User { Username = username, PasswordHash = Hash(password) };
-        return _repository.Insert(user);
+        var id = _repository.Insert(user);
+        return _tokenService.CreateToken(id);
     }
 
-    public int? Authenticate(string username, string password)
+    public string? Authenticate(string username, string password)
     {
         var user = _repository.GetByUsername(username);
         if (user == null) return null;
-        return user.PasswordHash == Hash(password) ? user.Id : null;
+        return user.PasswordHash == Hash(password) ? _tokenService.CreateToken(user.Id) : null;
     }
 
     private static string Hash(string password)

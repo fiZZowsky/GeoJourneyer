@@ -2,6 +2,6 @@
 
 public interface IUserService
 {
-    int Register(string username, string password);
-    int? Authenticate(string username, string password);
+    string Register(string username, string password);
+    string? Authenticate(string username, string password);
 }

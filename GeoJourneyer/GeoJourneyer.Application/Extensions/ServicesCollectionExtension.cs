@@ -13,5 +13,6 @@ public static class ServicesCollectionExtension
         services.AddScoped<IUserCountryService, UserCountryService>();
         services.AddScoped<ITravelPlanService, TravelPlanService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddSingleton<ITokenService, TokenService>();
     }
 }

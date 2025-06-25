@@ -1,12 +1,13 @@
 ﻿using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoJourneyer.Api.Controllers;
 
 [ApiController]
 [Route("api/travel-plans")]
+[Authorize]
 public class TravelPlansController : ControllerBase
 {
     private readonly ITravelPlanService _service;
