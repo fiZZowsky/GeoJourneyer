@@ -1,14 +1,34 @@
 ﻿@page "/"
-@using GeoJourneyer.App.Shared.Services
-@inject IFormFactor FormFactor
 
-<PageTitle>Home</PageTitle>
+<div class="hero">
+    <nav class="navbar">
+        <div class="logo">TRAVELER</div>
+        <ul class="nav-links">
+            <li><a href="/destinations">Destinations</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <a class="signup-btn" href="/signup">Sign Up</a>
+    </nav>
 
-<h1>Hello, world!</h1>
+    <div class="hero-content">
+        <h1>Explore the world</h1>
+        <p>Discover new destinations and experiences</p>
+        <a class="cta-btn" href="/get-started">Get Started</a>
+    </div>
+</div>
 
-Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
-
-@code {
-    private string factor => FormFactor.GetFormFactor();
-    private string platform => FormFactor.GetPlatform();
-}
+<section class="features">
+    <div class="feature">
+        <h2>Popular Destinations</h2>
+        <p>Explore our list of the most popular travel destinations around the globe.</p>
+    </div>
+    <div class="feature">
+        <h2>Special Offers</h2>
+        <p>Take advantage of our exclusive travel deals and discounts.</p>
+    </div>
+    <div class="feature">
+        <h2>Travel Guides</h2>
+        <p>Get tips and advice for your next adventure with our comprehensive travel guides.</p>
+    </div>
+</section>
