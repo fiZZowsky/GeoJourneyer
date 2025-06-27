@@ -1,37 +1,76 @@
 ﻿@page "/login"
 @inject ApiProxyClient ApiClient
 
-<h1>Login</h1>
-@if (!string.IsNullOrEmpty(Message))
-{
-    <p>@Message</p>
-}
-<input @bind="username" placeholder="Username" />
-<input type="password" @bind="password" placeholder="Password" />
-<button @onclick="OnLogin">Login</button>
+<div class="login-container">
+    <div class="form-selector">
+        <span class="label">Login</span>
+        <label class="switch">
+            <input type="checkbox" @bind="isRegister" />
+            <span class="slider"></span>
+        </label>
+        <span class="label">Register</span>
+    </div>
 
-<h2>Register</h2>
-<input @bind="regUsername" placeholder="Username" />
-<input type="password" @bind="regPassword" placeholder="Password" />
-<button @onclick="OnRegister">Register</button>
+    <div class="form-wrapper">
+        @if (!isRegister)
+        {
+            <form class="auth-form" @onsubmit="OnLoginAsync">
+                <div class="input-group">
+                    <i class="icon mail"></i>
+                    <input @bind="username" placeholder="name@mail.com" required />
+                </div>
+                <div class="input-group">
+                    <i class="icon lock"></i>
+                    <input type="password" @bind="password" placeholder="Password" required />
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+        }
+        else
+        {
+            <form class="auth-form" @onsubmit="OnRegisterAsync">
+                <div class="input-group">
+                    <i class="icon user"></i>
+                    <input @bind="regUsername" placeholder="Username" required />
+                </div>
+                <div class="input-group">
+                    <i class="icon mail"></i>
+                    <input type="email" @bind="regEmail" placeholder="Email" required />
+                </div>
+                <div class="input-group">
+                    <i class="icon lock"></i>
+                    <input type="password" @bind="regPassword" placeholder="Password" required />
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+        }
+    </div>
+</div>
 
 @code {
+    private bool isRegister = false;
+
     private string? Message;
     private string username = string.Empty;
     private string password = string.Empty;
     private string regUsername = string.Empty;
+    private string regEmail = string.Empty;
     private string regPassword = string.Empty;
 
-    private async Task OnLogin()
+    private async Task OnLoginAsync()
     {
-        var token = await ApiClient.PostAsync<object, string>("api/auth/login", new { Username = username, Password = password });
+        var token = await ApiClient.PostAsync<object, string>(
+            "api/auth/login",
+            new { Username = username, Password = password });
         ApiClient.SetToken(token);
         Message = token == null ? "Invalid credentials" : "Logged in";
     }
 
-    private async Task OnRegister()
+    private async Task OnRegisterAsync()
     {
-        var token = await ApiClient.PostAsync<object, string>("api/auth/register", new { Username = regUsername, Password = regPassword });
+        var token = await ApiClient.PostAsync<object, string>(
+            "api/auth/register",
+            new { Username = regUsername, Email = regEmail, Password = regPassword });
         ApiClient.SetToken(token);
         Message = token == null ? "Registration failed" : "Registered";
     }
