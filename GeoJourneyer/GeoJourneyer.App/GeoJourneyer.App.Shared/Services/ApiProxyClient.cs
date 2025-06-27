@@ -26,6 +26,31 @@ public class ApiProxyClient
         return await resp.Content.ReadFromJsonAsync<TResponse>();
     }
 
+    public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest payload)
+    {
+        var resp = await _httpClient.PutAsJsonAsync(endpoint, payload);
+        if (!resp.IsSuccessStatusCode) return default;
+        return await resp.Content.ReadFromJsonAsync<TResponse>();
+    }
+
+    public async Task<TResponse?> PatchAsync<TRequest, TResponse>(string endpoint, TRequest payload)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Patch, endpoint)
+        {
+            Content = JsonContent.Create(payload)
+        };
+        var resp = await _httpClient.SendAsync(request);
+        if (!resp.IsSuccessStatusCode) return default;
+        return await resp.Content.ReadFromJsonAsync<TResponse>();
+    }
+
+    public async Task<TResponse?> DeleteAsync<TResponse>(string endpoint)
+    {
+        var resp = await _httpClient.DeleteAsync(endpoint);
+        if (!resp.IsSuccessStatusCode) return default;
+        return await resp.Content.ReadFromJsonAsync<TResponse>();
+    }
+
     public void SetToken(string? token)
     {
         _token = token;
