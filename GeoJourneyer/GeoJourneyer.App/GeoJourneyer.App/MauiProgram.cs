@@ -20,6 +20,7 @@ namespace GeoJourneyer.App
 
             // Add device-specific services used by the GeoJourneyer.App.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
+            builder.Services.AddScoped<AuthState>();
 
             var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.Configuration["Api:BaseUrl"];
             var proxyUrl = builder.Configuration["ProxyUrl"];

@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @inject ApiProxyClient ApiClient
+@inject AuthState AuthState
 
 <div class="login-container">
     <div class="form-selector">
@@ -66,8 +67,16 @@
         var token = await ApiClient.PostAsync<object, string>(
             "api/auth/login",
             new { Username = username, Password = password });
-        ApiClient.SetToken(token);
-        Message = token == null ? "Invalid credentials" : "Logged in";
+        if (token != null)
+        {
+            ApiClient.SetToken(token);
+            AuthState.SignIn(username, token);
+            Message = "Logged in";
+        }
+        else
+        {
+            Message = "Invalid credentials";
+        }
     }
 
     private async Task OnRegisterAsync()
@@ -75,7 +84,15 @@
         var token = await ApiClient.PostAsync<object, string>(
             "api/auth/register",
             new { Username = regUsername, Email = regEmail, Password = regPassword });
-        ApiClient.SetToken(token);
-        Message = token == null ? "Registration failed" : "Registered";
+        if (token != null)
+        {
+            ApiClient.SetToken(token);
+            AuthState.SignIn(regUsername, token);
+            Message = "Registered";
+        }
+        else
+        {
+            Message = "Registration failed";
+        }
     }
 }

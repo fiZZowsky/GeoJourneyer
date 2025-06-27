@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Components.Routing
+﻿@inject ApiProxyClient ApiClient
+@inject AuthState AuthState
+@using Microsoft.AspNetCore.Components.Routing
 
 <nav class="navbar">
     <a class="logo" href="/">GEOJOURNEY</a>
@@ -21,7 +23,33 @@
         </li>
     </ul>
 
-    <NavLink href="/login" class="signup-btn">
-        Sign Up
-    </NavLink>
+    @if (AuthState.IsLoggedIn)
+    {
+        <span class="profile">@AuthState.Username</span>
+        <button class="logout-btn" @onclick="Logout">Log Out</button>
+    }
+    else
+    {
+        <NavLink href="/login" class="signup-btn">
+            Sign Up
+        </NavLink>
+    }
 </nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AuthState.OnChange += StateHasChanged;
+    }
+
+    private void Logout()
+    {
+        ApiClient.SetToken(null);
+        AuthState.SignOut();
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= StateHasChanged;
+    }
+}

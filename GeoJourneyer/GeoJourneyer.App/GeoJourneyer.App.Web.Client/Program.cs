@@ -9,6 +9,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 // Add device-specific services used by the GeoJourneyer.App.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+builder.Services.AddScoped<AuthState>();
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
 var proxyUrl = builder.Configuration["ProxyUrl"];
