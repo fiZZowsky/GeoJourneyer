@@ -24,13 +24,15 @@
 
     private async Task OnLogin()
     {
-        var token = await ApiClient.LoginAsync(username, password);
+        var token = await ApiClient.PostAsync<object, string>("api/auth/login", new { Username = username, Password = password });
+        ApiClient.SetToken(token);
         Message = token == null ? "Invalid credentials" : "Logged in";
     }
 
     private async Task OnRegister()
     {
-        var token = await ApiClient.RegisterAsync(regUsername, regPassword);
+        var token = await ApiClient.PostAsync<object, string>("api/auth/register", new { Username = regUsername, Password = regPassword });
+        ApiClient.SetToken(token);
         Message = token == null ? "Registration failed" : "Registered";
     }
 }

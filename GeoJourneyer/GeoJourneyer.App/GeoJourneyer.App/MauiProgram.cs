@@ -1,6 +1,8 @@
 ﻿using GeoJourneyer.App.Services;
 using GeoJourneyer.App.Shared.Services;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Net.Http;
 
 namespace GeoJourneyer.App
 {
@@ -18,6 +20,28 @@ namespace GeoJourneyer.App
 
             // Add device-specific services used by the GeoJourneyer.App.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
+
+            var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.Configuration["Api:BaseUrl"];
+            var proxyUrl = builder.Configuration["ProxyUrl"];
+
+            builder.Services
+                .AddHttpClient<ApiProxyClient>(client =>
+                {
+                    if (!string.IsNullOrEmpty(apiBaseUrl))
+                    {
+                        client.BaseAddress = new Uri(apiBaseUrl);
+                    }
+                })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var handler = new HttpClientHandler();
+                    if (!string.IsNullOrEmpty(proxyUrl))
+                    {
+                        handler.UseProxy = true;
+                        handler.Proxy = new WebProxy(proxyUrl);
+                    }
+                    return handler;
+                });
 
             builder.Services.AddMauiBlazorWebView();
 

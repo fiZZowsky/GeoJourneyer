@@ -24,6 +24,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        countries = await ApiClient.GetCountriesAsync();
+        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
     }
 }

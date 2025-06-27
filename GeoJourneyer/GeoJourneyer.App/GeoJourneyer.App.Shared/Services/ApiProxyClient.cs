@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace GeoJourneyer.App.Shared.Services;
 
@@ -14,27 +14,16 @@ public class ApiProxyClient
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<CountryDto>?> GetCountriesAsync()
+    public async Task<T?> GetAsync<T>(string endpoint)
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<CountryDto>>("api/countries");
+        return await _httpClient.GetFromJsonAsync<T>(endpoint);
     }
 
-    public async Task<string?> RegisterAsync(string username, string password)
+    public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest payload)
     {
-        var resp = await _httpClient.PostAsJsonAsync("api/auth/register", new { Username = username, Password = password });
-        if (!resp.IsSuccessStatusCode) return null;
-        var token = await resp.Content.ReadFromJsonAsync<string>();
-        SetToken(token);
-        return token;
-    }
-
-    public async Task<string?> LoginAsync(string username, string password)
-    {
-        var resp = await _httpClient.PostAsJsonAsync("api/auth/login", new { Username = username, Password = password });
-        if (!resp.IsSuccessStatusCode) return null;
-        var token = await resp.Content.ReadFromJsonAsync<string>();
-        SetToken(token);
-        return token;
+        var resp = await _httpClient.PostAsJsonAsync(endpoint, payload);
+        if (!resp.IsSuccessStatusCode) return default;
+        return await resp.Content.ReadFromJsonAsync<TResponse>();
     }
 
     public void SetToken(string? token)
