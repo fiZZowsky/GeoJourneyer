@@ -126,6 +126,13 @@
     width: 100%;
 }
 
-    .auth-form button:hover {
-        opacity: 0.9;
-    }
+.auth-form button:hover {
+    opacity: 0.9;
+}
+
+.message {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #b91c1c;
+    text-align: center;
+}

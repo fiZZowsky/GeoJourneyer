@@ -14,7 +14,7 @@
     <div class="form-wrapper">
         @if (!isRegister)
         {
-            <form class="auth-form" @onsubmit="OnLoginAsync">
+            <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
                     <i class="icon mail"></i>
                     <input @bind="username" placeholder="name@mail.com" required />
@@ -28,7 +28,7 @@
         }
         else
         {
-            <form class="auth-form" @onsubmit="OnRegisterAsync">
+            <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
                 <div class="input-group">
                     <i class="icon user"></i>
                     <input @bind="regUsername" placeholder="Username" required />
@@ -43,6 +43,10 @@
                 </div>
                 <button type="submit">Sign Up</button>
             </form>
+        }
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <p class="message">@Message</p>
         }
     </div>
 </div>
