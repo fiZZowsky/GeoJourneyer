@@ -18,16 +18,21 @@
         {
             <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
-                    @* <Icon Name="@IconName.Envelope" Class="icon" /> *@
+                    <i class="fa-solid fa-envelope icon"></i>
                     <input @bind="username" placeholder="name@mail.com" required />
                 </div>
-                <div class="input-group">
-                    <Icon Name="@IconName.Lock" Class="icon" />
-                    <input type="@loginPasswordType" @bind="password" placeholder="Password" required />
+                <div class="input-group password-group">
+                    <input type="@loginPasswordType"
+                           @bind="password"
+                           placeholder="Enter password"
+                           required />
                     <button type="button" class="reveal-btn"
-                            @onmousedown="ShowLoginPassword" @onmouseup="HideLoginPassword" @onmouseleave="HideLoginPassword"
-                            @ontouchstart="ShowLoginPassword" @ontouchend="HideLoginPassword">
-                        <Icon Name="@IconName.Eye" />
+                            @onmousedown="ShowLoginPassword"
+                            @onmouseup="HideLoginPassword"
+                            @onmouseleave="HideLoginPassword"
+                            @ontouchstart="ShowLoginPassword"
+                            @ontouchend="HideLoginPassword">
+                        <i class="fa-solid fa-lock icon"></i>
                     </button>
                 </div>
                 <button type="submit">Sign In</button>
@@ -37,7 +42,7 @@
         {
             <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
                 <div class="input-group">
-                    <Icon Name="@IconName.User" Class="icon" />
+                    <i class="fa-solid fa-user icon"></i>
                     <input @bind="regUsername"
                            @bind:event="oninput"
                            @bind:after="ValidateRegUsername"
@@ -53,8 +58,9 @@
                         }
                     </ul>
                 }
+
                 <div class="input-group">
-                    @* <Icon Name="@IconName.Envelope" Class="icon" /> *@
+                    <i class="fa-solid fa-envelope icon"></i>
                     <input type="email"
                            @bind="regEmail"
                            @bind:event="oninput"
@@ -71,8 +77,9 @@
                         }
                     </ul>
                 }
-                <div class="input-group">
-                    <Icon Name="@IconName.Lock" Class="icon" />
+
+                <div class="input-group password-group">
+                    <i class="fa-solid fa-lock icon"></i>
                     <input type="@regPasswordType"
                            @bind="regPassword"
                            @bind:event="oninput"
@@ -80,9 +87,12 @@
                            class="@GetInputClass(regPasswordErrors)"
                            placeholder="Password" />
                     <button type="button" class="reveal-btn"
-                            @onmousedown="ShowRegPassword" @onmouseup="HideRegPassword" @onmouseleave="HideRegPassword"
-                            @ontouchstart="ShowRegPassword" @ontouchend="HideRegPassword">
-                        <Icon Name="@IconName.Eye" />
+                            @onmousedown="ShowRegPassword"
+                            @onmouseup="HideRegPassword"
+                            @onmouseleave="HideRegPassword"
+                            @ontouchstart="ShowRegPassword"
+                            @ontouchend="HideRegPassword">
+                        <i class="fa-solid fa-eye"></i>
                     </button>
                 </div>
                 @if (regPasswordErrors.Any())
@@ -94,8 +104,9 @@
                         }
                     </ul>
                 }
-                <div class="input-group">
-                    <Icon Name="@IconName.Lock" Class="icon" />
+
+                <div class="input-group password-group">
+                    <i class="fa-solid fa-lock icon"></i>
                     <input type="@regConfirmPasswordType"
                            @bind="regPasswordConfirm"
                            @bind:event="oninput"
@@ -103,9 +114,12 @@
                            class="@GetInputClass(regConfirmErrors)"
                            placeholder="Confirm Password" />
                     <button type="button" class="reveal-btn"
-                            @onmousedown="ShowRegConfirmPassword" @onmouseup="HideRegConfirmPassword" @onmouseleave="HideRegConfirmPassword"
-                            @ontouchstart="ShowRegConfirmPassword" @ontouchend="HideRegConfirmPassword">
-                        <Icon Name="@IconName.Eye" />
+                            @onmousedown="ShowRegConfirmPassword"
+                            @onmouseup="HideRegConfirmPassword"
+                            @onmouseleave="HideRegConfirmPassword"
+                            @ontouchstart="ShowRegConfirmPassword"
+                            @ontouchend="HideRegConfirmPassword">
+                        <i class="fa-solid fa-eye"></i>
                     </button>
                 </div>
                 @if (regConfirmErrors.Any())
@@ -117,9 +131,11 @@
                         }
                     </ul>
                 }
+
                 <button type="submit">Sign Up</button>
             </form>
         }
+
         @if (!string.IsNullOrEmpty(Message))
         {
             <p class="message">@Message</p>
@@ -147,15 +163,11 @@
     private string regPasswordType = "password";
     private string regConfirmPasswordType = "password";
 
-    private void ValidateRegUsername()
-    {
+    private void ValidateRegUsername() =>
         regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
-    }
 
-    private void ValidateRegEmail()
-    {
+    private void ValidateRegEmail() =>
         regEmailErrors = RegisterValidator.ValidateEmail(regEmail);
-    }
 
     private void ValidateRegPassword()
     {
@@ -163,10 +175,8 @@
         ValidateConfirmPassword();
     }
 
-    private void ValidateConfirmPassword()
-    {
+    private void ValidateConfirmPassword() =>
         regConfirmErrors = RegisterValidator.ValidateConfirmPassword(regPassword, regPasswordConfirm);
-    }
 
     private bool ValidateForm()
     {
@@ -174,16 +184,21 @@
         ValidateRegEmail();
         ValidateRegPassword();
         ValidateConfirmPassword();
-        return !(regUsernameErrors.Any() || regEmailErrors.Any() || regPasswordErrors.Any() || regConfirmErrors.Any());
+        return !(regUsernameErrors.Any()
+              || regEmailErrors.Any()
+              || regPasswordErrors.Any()
+              || regConfirmErrors.Any());
     }
 
-    private static string GetInputClass(List<string> errors) => errors.Any() ? "invalid" : string.Empty;
+    private static string GetInputClass(List<string> errors) =>
+        errors.Any() ? "invalid" : string.Empty;
 
     private async Task OnLoginAsync()
     {
         var token = await ApiClient.PostAsync<object, string>(
             "api/auth/login",
             new { Username = username, Password = password });
+
         if (token != null)
         {
             ApiClient.SetToken(token);
@@ -198,14 +213,12 @@
 
     private async Task OnRegisterAsync()
     {
-        if (!ValidateForm())
-        {
-            return;
-        }
+        if (!ValidateForm()) return;
 
         var token = await ApiClient.PostAsync<object, string>(
             "api/auth/register",
             new { Username = regUsername, Email = regEmail, Password = regPassword });
+
         if (token != null)
         {
             ApiClient.SetToken(token);
@@ -218,12 +231,10 @@
         }
     }
 
-    private void ShowLoginPassword() => loginPasswordType = "text";
-    private void HideLoginPassword() => loginPasswordType = "password";
-
-    private void ShowRegPassword() => regPasswordType = "text";
-    private void HideRegPassword() => regPasswordType = "password";
-
+    private void ShowLoginPassword()    => loginPasswordType = "text";
+    private void HideLoginPassword()    => loginPasswordType = "password";
+    private void ShowRegPassword()      => regPasswordType   = "text";
+    private void HideRegPassword()      => regPasswordType   = "password";
     private void ShowRegConfirmPassword() => regConfirmPasswordType = "text";
     private void HideRegConfirmPassword() => regConfirmPasswordType = "password";
 }

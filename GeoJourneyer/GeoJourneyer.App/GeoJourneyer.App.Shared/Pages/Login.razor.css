@@ -79,6 +79,7 @@
     gap: 1rem;
 }
 
+/* Domyślne input-group z ikonami po lewej */
 .input-group {
     position: relative;
 }
@@ -102,19 +103,46 @@
         box-sizing: border-box;
     }
 
-    .input-group .reveal-btn {
-        position: absolute;
-        top: 50%;
-        right: 0.75rem;
-        transform: translateY(-50%);
-        background: transparent;
-        border: none;
-        color: #888;
-        cursor: pointer;
-        padding: 0;
+    /* Specjalne style dla pól hasła */
+    .input-group.password-group {
+        /* usuwa ikonę z lewej */
     }
 
-.auth-form button {
+        .input-group.password-group .icon {
+            display: none;
+        }
+
+        .input-group.password-group input {
+            /* mniejsze border-radius i jaśniejsze tło */
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 0.375rem;
+            padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+        }
+
+        .input-group.password-group .reveal-btn {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+            .input-group.password-group .reveal-btn svg {
+                width: 1.25rem;
+                height: 1.25rem;
+                fill: #666;
+            }
+
+            .input-group.password-group .reveal-btn:active svg {
+                fill: #333;
+            }
+
+/* Przyciski formularza */
+.auth-form button[type="submit"] {
     padding: 0.75rem;
     font-size: 1rem;
     border: none;
@@ -125,10 +153,11 @@
     width: 100%;
 }
 
-.auth-form button:hover {
-    opacity: 0.9;
-}
+    .auth-form button[type="submit"]:hover {
+        opacity: 0.9;
+    }
 
+/* Wiadomość błędu / statusu */
 .message {
     margin-top: 1rem;
     font-size: 0.9rem;
