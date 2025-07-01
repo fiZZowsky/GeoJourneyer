@@ -18,4 +18,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         using var connection = Context.CreateConnection();
         return connection.QuerySingleOrDefault<User>($"SELECT * FROM {TableName} WHERE Username = @username", new { username });
     }
+
+    public User? GetByEmail(string email)
+    {
+        using var connection = Context.CreateConnection();
+        return connection.QuerySingleOrDefault<User>($"SELECT * FROM {TableName} WHERE Email = @email", new { email });
+    }
 }

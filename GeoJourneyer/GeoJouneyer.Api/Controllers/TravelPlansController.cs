@@ -1,4 +1,5 @@
 ﻿using GeoJourneyer.Application.Services.Interfaces;
+using GeoJourneyer.Application.DTOs;
 using GeoJourneyer.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -52,6 +53,4 @@ public class TravelPlansController : ControllerBase
         _service.SaveStops(planId, optimized);
         return Ok(optimized);
     }
-
-    public record TravelPlanDto(int UserId, int CountryId, string Name, IEnumerable<int> PlaceIds);
 }

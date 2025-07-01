@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Mappings\" />
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
   <ItemGroup>

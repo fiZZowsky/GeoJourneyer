@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using GeoJourneyer.Application.DTOs;
 using GeoJourneyer.Application.Repositories;
 using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
@@ -17,18 +18,23 @@ public class UserService : IUserService
         _tokenService = tokenService;
     }
 
-    public string Register(string username, string password)
+    public string? Register(RegisterUserDto dto)
     {
-        var user = new User { Username = username, PasswordHash = Hash(password) };
+        if (_repository.GetByUsername(dto.Username) != null)
+        {
+            return null;
+        }
+
+        var user = new User { Username = dto.Username, PasswordHash = Hash(dto.Password) };
         var id = _repository.Insert(user);
         return _tokenService.CreateToken(id);
     }
 
-    public string? Authenticate(string username, string password)
+    public string? Authenticate(LoginUserDto dto)
     {
-        var user = _repository.GetByUsername(username);
+        var user = _repository.GetByEmail(dto.Email);
         if (user == null) return null;
-        return user.PasswordHash == Hash(password) ? _tokenService.CreateToken(user.Id) : null;
+        return user.PasswordHash == Hash(dto.Password) ? _tokenService.CreateToken(user.Id) : null;
     }
 
     private static string Hash(string password)

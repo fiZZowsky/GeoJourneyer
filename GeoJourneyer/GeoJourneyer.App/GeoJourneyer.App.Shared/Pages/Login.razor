@@ -26,7 +26,7 @@
                     <input type="@loginPasswordType"
                            @bind="password"
                            placeholder="Enter password"
-                           required />
+                           @oncopy:preventDefault />
                     <button type="button" class="reveal-btn"
                             @onmousedown="ShowLoginPassword"
                             @onmouseup="HideLoginPassword"
@@ -86,7 +86,8 @@
                            @bind:event="oninput"
                            @bind:after="ValidateRegPassword"
                            class="@GetInputClass(regPasswordErrors)"
-                           placeholder="Password" />
+                           placeholder="Password"
+                           @oncopy:preventDefault />
                     <button type="button" class="reveal-btn"
                             @onmousedown="ShowRegPassword"
                             @onmouseup="HideRegPassword"
@@ -113,7 +114,8 @@
                            @bind:event="oninput"
                            @bind:after="ValidateConfirmPassword"
                            class="@GetInputClass(regConfirmErrors)"
-                           placeholder="Confirm Password" />
+                           placeholder="Confirm Password"
+                           @oncopy:preventDefault />
                     <button type="button" class="reveal-btn"
                             @onmousedown="ShowRegConfirmPassword"
                             @onmouseup="HideRegConfirmPassword"

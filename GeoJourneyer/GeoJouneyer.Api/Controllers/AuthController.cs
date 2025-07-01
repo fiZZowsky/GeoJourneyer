@@ -1,5 +1,6 @@
 ﻿using GeoJourneyer.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using GeoJourneyer.Application.DTOs;
 
 namespace GeoJouneyer.Api.Controllers;
 
@@ -15,19 +16,18 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] UserDto dto)
+    public IActionResult Register([FromBody] RegisterUserDto dto)
     {
-        var token = _service.Register(dto.Username, dto.Password);
+        var token = _service.Register(dto);
+        if (token == null) return Conflict();
         return Ok(token);
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] UserDto dto)
+    public IActionResult Login([FromBody] LoginUserDto dto)
     {
-        var token = _service.Authenticate(dto.Username, dto.Password);
+        var token = _service.Authenticate(dto);
         if (token == null) return Unauthorized();
         return Ok(token);
     }
-
-    public record UserDto(string Username, string Password);
 }
