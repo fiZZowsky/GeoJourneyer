@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     {
         var token = _service.Register(dto);
         if (token == null) return Conflict();
-        return Ok(token);
+        return Ok(new { token });
     }
 
     [HttpPost("login")]
@@ -28,6 +28,6 @@ public class AuthController : ControllerBase
     {
         var token = _service.Authenticate(dto);
         if (token == null) return Unauthorized();
-        return Ok(token);
+        return Ok(new { token });
     }
 }

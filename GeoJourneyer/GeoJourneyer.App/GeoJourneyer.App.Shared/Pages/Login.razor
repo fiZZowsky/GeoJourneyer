@@ -2,6 +2,7 @@
 @inject ApiProxyClient ApiClient
 @inject AuthState AuthState
 @inject RegisterValidator RegisterValidator
+@inject NavigationManager Navigation
 
 <div class="login-container">
     <div class="form-selector">
@@ -19,12 +20,15 @@
             <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
                     <i class="fa-solid fa-envelope icon"></i>
-                    <input @bind="username" placeholder="name@mail.com" required />
+                    <input @bind="username"
+                           @bind:event="oninput"
+                           placeholder="name@mail.com" required />
                 </div>
                 <div class="input-group password-group">
                     <i class="fa-solid fa-lock icon"></i>
                     <input type="@loginPasswordType"
                            @bind="password"
+                           @bind:event="oninput"
                            placeholder="Enter password"
                            @oncopy:preventDefault />
                     <button type="button" class="reveal-btn"
@@ -200,13 +204,14 @@
     {
         var token = await ApiClient.PostAsync<object, string>(
             "api/auth/login",
-            new { Username = username, Password = password });
+            new { Email = username, Password = password });
 
         if (token != null)
         {
             ApiClient.SetToken(token);
             AuthState.SignIn(username, token);
             Message = "Logged in";
+            Navigation.NavigateTo("/", true);
         }
         else
         {
@@ -227,6 +232,7 @@
             ApiClient.SetToken(token);
             AuthState.SignIn(regUsername, token);
             Message = "Registered";
+            Navigation.NavigateTo("/", true);
         }
         else
         {
