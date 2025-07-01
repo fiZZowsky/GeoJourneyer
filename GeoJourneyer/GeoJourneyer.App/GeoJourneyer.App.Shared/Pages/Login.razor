@@ -1,4 +1,6 @@
 ﻿@page "/login"
+@using Blazorise
+@using Blazorise.Icons.FontAwesome
 @inject ApiProxyClient ApiClient
 @inject AuthState AuthState
 
@@ -17,11 +19,11 @@
         {
             <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
-                    <i class="icon mail"></i>
+                    <Icon Name="Envelope" Class="icon" />
                     <input @bind="username" placeholder="name@mail.com" required />
                 </div>
                 <div class="input-group">
-                    <i class="icon lock"></i>
+                    <Icon Name="Lock" Class="icon" />
                     <input type="password" @bind="password" placeholder="Password" required />
                 </div>
                 <button type="submit">Sign In</button>
@@ -31,15 +33,15 @@
         {
             <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
                 <div class="input-group">
-                    <i class="icon user"></i>
+                    <Icon Name="User" Class="icon" />
                     <input @bind="regUsername" placeholder="Username" required />
                 </div>
                 <div class="input-group">
-                    <i class="icon mail"></i>
+                    <Icon Name="Envelope" Class="icon" />
                     <input type="email" @bind="regEmail" placeholder="Email" required />
                 </div>
                 <div class="input-group">
-                    <i class="icon lock"></i>
+                    <Icon Name="Lock" Class="icon" />
                     <input type="password" @bind="regPassword" placeholder="Password" required />
                 </div>
                 <button type="submit">Sign Up</button>
