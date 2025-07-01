@@ -25,7 +25,13 @@ public class UserService : IUserService
             return null;
         }
 
-        var user = new User { Username = dto.Username, PasswordHash = Hash(dto.Password) };
+        var user = new User
+        {
+            Username = dto.Username,
+            Email = dto.Email,
+            PasswordHash = Hash(dto.Password)
+        };
+
         var id = _repository.Insert(user);
         return _tokenService.CreateToken(id);
     }
