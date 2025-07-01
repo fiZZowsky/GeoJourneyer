@@ -131,13 +131,13 @@
             padding: 0;
         }
 
-            .input-group.password-group .reveal-btn svg {
+            .input-group.password-group .reveal-btn i {
                 width: 1.25rem;
                 height: 1.25rem;
                 fill: #666;
             }
 
-            .input-group.password-group .reveal-btn:active svg {
+            .input-group.password-group .reveal-btn:active i {
                 fill: #333;
             }
 

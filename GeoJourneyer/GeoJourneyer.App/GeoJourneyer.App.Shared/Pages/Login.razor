@@ -22,6 +22,7 @@
                     <input @bind="username" placeholder="name@mail.com" required />
                 </div>
                 <div class="input-group password-group">
+                    <i class="fa-solid fa-lock icon"></i>
                     <input type="@loginPasswordType"
                            @bind="password"
                            placeholder="Enter password"
@@ -32,7 +33,7 @@
                             @onmouseleave="HideLoginPassword"
                             @ontouchstart="ShowLoginPassword"
                             @ontouchend="HideLoginPassword">
-                        <i class="fa-solid fa-lock icon"></i>
+                        <i class="fa-solid fa-eye"></i>
                     </button>
                 </div>
                 <button type="submit">Sign In</button>
