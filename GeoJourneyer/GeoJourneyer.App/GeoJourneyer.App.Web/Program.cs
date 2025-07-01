@@ -38,6 +38,9 @@ builder.Services
 
 var app = builder.Build();
 
+var authState = app.Services.GetRequiredService<AuthState>();
+await authState.InitializeAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -61,4 +64,4 @@ app.MapRazorComponents<App>()
         typeof(GeoJourneyer.App.Shared._Imports).Assembly,
         typeof(GeoJourneyer.App.Web.Client._Imports).Assembly);
 
-app.Run();
+await app.RunAsync();

@@ -28,4 +28,8 @@ builder.Services
         }
         return handler;
     });
-await builder.Build().RunAsync();
+
+var host = builder.Build();
+var auth = host.Services.GetRequiredService<AuthState>();
+await auth.InitializeAsync();
+await host.RunAsync();

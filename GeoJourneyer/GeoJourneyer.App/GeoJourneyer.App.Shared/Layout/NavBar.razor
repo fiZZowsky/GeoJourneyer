@@ -30,10 +30,10 @@
         AuthState.OnChange += StateHasChanged;
     }
 
-    private void Logout()
+    private async Task Logout()
     {
         ApiClient.SetToken(null);
-        AuthState.SignOut();
+        await AuthState.SignOutAsync();
     }
 
     public void Dispose()

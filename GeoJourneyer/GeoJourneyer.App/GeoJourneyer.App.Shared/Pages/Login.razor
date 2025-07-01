@@ -209,7 +209,7 @@
         if (response?.Token != null)
         {
             ApiClient.SetToken(response.Token);
-            AuthState.SignIn(username, response.Token);
+            await AuthState.SignInAsync(username, response.Token);
             Message = "Logged in";
             Navigation.NavigateTo("/");
         }
@@ -230,7 +230,7 @@
         if (response?.Token != null)
         {
             ApiClient.SetToken(response.Token);
-            AuthState.SignIn(regUsername, response.Token);
+            await AuthState.SignInAsync(regUsername, response.Token);
             Message = "Registered";
             Navigation.NavigateTo("/");
         }
