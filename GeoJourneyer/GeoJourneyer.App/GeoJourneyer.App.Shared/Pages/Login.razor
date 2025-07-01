@@ -202,14 +202,14 @@
 
     private async Task OnLoginAsync()
     {
-        var token = await ApiClient.PostAsync<object, string>(
+        var response = await ApiClient.PostAsync<object, AuthTokenDto>(
             "api/auth/login",
             new { Email = username, Password = password });
 
-        if (token != null)
+        if (response?.Token != null)
         {
-            ApiClient.SetToken(token);
-            AuthState.SignIn(username, token);
+            ApiClient.SetToken(response.Token);
+            AuthState.SignIn(username, response.Token);
             Message = "Logged in";
             Navigation.NavigateTo("/", true);
         }
@@ -223,14 +223,14 @@
     {
         if (!ValidateForm()) return;
 
-        var token = await ApiClient.PostAsync<object, string>(
+        var response = await ApiClient.PostAsync<object, AuthTokenDto>(
             "api/auth/register",
             new { Username = regUsername, Email = regEmail, Password = regPassword });
 
-        if (token != null)
+        if (response?.Token != null)
         {
-            ApiClient.SetToken(token);
-            AuthState.SignIn(regUsername, token);
+            ApiClient.SetToken(response.Token);
+            AuthState.SignIn(regUsername, response.Token);
             Message = "Registered";
             Navigation.NavigateTo("/", true);
         }
