@@ -92,27 +92,26 @@
         color: #888;
     }
 
-        .input-group .icon.mail::before {
-            content: "\f0e0";
-        }
-        /* font-awesome envelope */
-        .input-group .icon.lock::before {
-            content: "\f023";
-        }
-        /* font-awesome lock */
-        .input-group .icon.user::before {
-            content: "\f007";
-        }
-    /* font-awesome user */
-
     .input-group input {
         width: 100%;
-        padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+        padding: 0.75rem 2.5rem 0.75rem 2.5rem;
         font-size: 1rem;
         border: 1px solid #ddd;
         border-radius: 0.5rem;
         outline: none;
         box-sizing: border-box;
+    }
+
+    .input-group .reveal-btn {
+        position: absolute;
+        top: 50%;
+        right: 0.75rem;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: #888;
+        cursor: pointer;
+        padding: 0;
     }
 
 .auth-form button {

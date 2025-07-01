@@ -1,0 +1,23 @@
+﻿@page "/profile"
+@inject AuthState AuthState
+@inject NavigationManager Navigation
+
+<h1>Profile</h1>
+@if (!AuthState.IsLoggedIn)
+{
+    <p>You are not logged in.</p>
+}
+else
+{
+    <p>Welcome, @AuthState.Username!</p>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!AuthState.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login", true);
+        }
+    }
+}
