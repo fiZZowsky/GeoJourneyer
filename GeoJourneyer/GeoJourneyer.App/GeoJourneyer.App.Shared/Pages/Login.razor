@@ -211,7 +211,7 @@
             ApiClient.SetToken(response.Token);
             AuthState.SignIn(username, response.Token);
             Message = "Logged in";
-            Navigation.NavigateTo("/", true);
+            Navigation.NavigateTo("/");
         }
         else
         {
@@ -232,7 +232,7 @@
             ApiClient.SetToken(response.Token);
             AuthState.SignIn(regUsername, response.Token);
             Message = "Registered";
-            Navigation.NavigateTo("/", true);
+            Navigation.NavigateTo("/");
         }
         else
         {
