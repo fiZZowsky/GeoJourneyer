@@ -1,0 +1,53 @@
+.notify-container {
+    position: relative;
+}
+
+.notify-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    font-size: 1.25rem;
+}
+
+.unread-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.6rem;
+    height: 0.6rem;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.notify-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: 250px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 1000;
+}
+
+    .notify-list li {
+        padding: 0.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .notify-list li.unread {
+            background-color: #f5f5f5;
+        }
+
+        .notify-list li .actions button {
+            margin-left: 0.25rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }

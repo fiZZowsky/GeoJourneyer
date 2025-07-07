@@ -1,0 +1,15 @@
+﻿namespace GeoJourneyer.App.Shared.Services;
+
+public enum NotificationType
+{
+    Message,
+    FriendRequest
+}
+
+public class Notification
+{
+    public int Id { get; set; }
+    public NotificationType Type { get; set; }
+    public string Text { get; set; } = string.Empty;
+    public bool IsRead { get; set; }
+}

@@ -16,6 +16,7 @@
     <div class="auth">
         @if (AuthState.IsLoggedIn)
         {
+            <NotificationBell />
             <NavLink href="/profile" class="profile">@AuthState.Username</NavLink>
             <button class="logout-btn" @onclick="Logout">Log Out</button>
         }

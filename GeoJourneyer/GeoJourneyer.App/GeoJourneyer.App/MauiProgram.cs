@@ -21,6 +21,7 @@ namespace GeoJourneyer.App
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
             builder.Services.AddScoped<AuthState>();
             builder.Services.AddScoped<RegisterValidator>();
+            builder.Services.AddScoped<NotificationService>();
 
             var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.Configuration["Api:BaseUrl"];
             var proxyUrl = builder.Configuration["ProxyUrl"];

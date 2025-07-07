@@ -1,0 +1,64 @@
+﻿@inject NotificationService NotificationService
+
+<div class="notify-container">
+    <button class="notify-icon" @onclick="Toggle">
+        <i class="fa-solid fa-bell"></i>
+        @if (NotificationService.HasUnread)
+        {
+            <span class="unread-dot"></span>
+        }
+    </button>
+    @if (showList)
+    {
+        <ul class="notify-list">
+            @foreach (var n in NotificationService.Notifications)
+            {
+                <li class="@(n.IsRead ? string.Empty : "unread")">
+                    @if (n.Type == NotificationType.FriendRequest)
+                    {
+                        <span class="text">@n.Text</span>
+                        <span class="actions">
+                            <button class="accept" @onclick="() => Accept(n)">✔</button>
+                            <button class="reject" @onclick="() => Reject(n)">✖</button>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text" @onclick="() => Select(n)">@n.Text</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private bool showList;
+
+    protected override void OnInitialized()
+    {
+        NotificationService.OnChange += StateHasChanged;
+    }
+
+    private void Toggle() => showList = !showList;
+
+    private void Select(Notification n)
+    {
+        NotificationService.MarkAsRead(n);
+    }
+
+    private void Accept(Notification n)
+    {
+        NotificationService.MarkAsRead(n);
+    }
+
+    private void Reject(Notification n)
+    {
+        NotificationService.Remove(n);
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnChange -= StateHasChanged;
+    }
+}
