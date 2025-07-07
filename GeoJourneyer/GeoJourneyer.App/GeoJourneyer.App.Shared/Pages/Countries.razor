@@ -2,6 +2,9 @@
 @inject ApiProxyClient ApiClient
 @inject AuthState AuthState
 @inject IJSRuntime JS
+@using Microsoft.JSInterop
+
+@implements IDisposable
 
 <PageTitle>Countries</PageTitle>
 
@@ -55,6 +58,7 @@ else
     private IEnumerable<CountryDto>? allCountries;
     private List<UserCountryDto> visited = new();
     private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
+    private DotNetObjectReference<Countries>? objRef;
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,7 +113,8 @@ else
         var visitedNames = visited.Select(v => v.Country).ToArray();
         if (showGlobe && !globeInit)
         {
-            await JS.InvokeVoidAsync("initGlobe", visitedNames);
+            objRef ??= DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
             globeInit = true;
         }
         else if (showGlobe)
@@ -122,7 +127,8 @@ else
     {
         if (showGlobe && !globeInit)
         {
-            await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray());
+            objRef ??= DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray(), objRef);
             globeInit = true;
         }
     }
@@ -150,5 +156,28 @@ else
     {
         input = input.Replace('-', '+').Replace('_', '/');
         return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+
+    [JSInvokable]
+    public async Task ToggleCountry(string name)
+    {
+        var existing = visited.FirstOrDefault(v => v.Country == name);
+        if (existing != null)
+        {
+            await RemoveCountry(existing);
+        }
+        else
+        {
+            var country = allCountries?.FirstOrDefault(c => c.Name == name);
+            if (country != null)
+            {
+                await AddCountry(country);
+            }
+        }
     }
 }
