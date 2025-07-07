@@ -63,9 +63,9 @@ else
         if (uid == null) return;
         var payload = new UserCountryDto(0, uid.Value, country.Name, CountryStatus.Visited);
         var id = await ApiClient.PostAsync<UserCountryDto, int>("api/user-countries", payload);
-        if (id != null)
+        if (id > 0)
         {
-            visited.Add(payload with { Id = id.Value });
+            visited.Add(payload with { Id = id });
             ComputeToVisit();
         }
     }
