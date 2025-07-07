@@ -4,6 +4,11 @@
 
 <h1>Profile</h1>
 @if (!AuthState.IsLoggedIn)
+    @if (!_initialized)
+    {
+        <p>Loading...</p>
+    }
+    else if (!AuthState.IsLoggedIn)
 {
     <p>You are not logged in.</p>
 }
@@ -13,11 +18,21 @@ else
 }
 
 @code {
-    protected override void OnInitialized()
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!AuthState.IsLoggedIn)
+        if (firstRender && OperatingSystem.IsBrowser())
         {
-            Navigation.NavigateTo("/login", true);
+            _initialized = true;
+            if (!AuthState.IsLoggedIn)
+            {
+                Navigation.NavigateTo("/login", true);
+            }
+            else
+            {
+                StateHasChanged();
+            }
         }
     }
 }

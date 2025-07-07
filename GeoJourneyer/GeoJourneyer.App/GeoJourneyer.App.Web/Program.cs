@@ -38,9 +38,6 @@ builder.Services
 
 var app = builder.Build();
 
-var authState = app.Services.GetRequiredService<AuthState>();
-await authState.InitializeAsync();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

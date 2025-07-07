@@ -77,6 +77,11 @@ public class ApiProxyClient
         if (!_authState.IsLoggedIn)
             return;
 
+        if (string.IsNullOrEmpty(_token) && !string.IsNullOrEmpty(_authState.Token))
+        {
+            SetToken(_authState.Token);
+        }
+
         if (_authState.Expires <= DateTimeOffset.UtcNow)
         {
             await _authState.SignOutAsync();
