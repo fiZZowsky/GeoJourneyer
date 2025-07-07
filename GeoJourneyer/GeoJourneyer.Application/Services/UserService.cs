@@ -29,7 +29,12 @@ public class UserService : IUserService
         {
             Username = dto.Username,
             Email = dto.Email,
-            PasswordHash = Hash(dto.Password)
+            PasswordHash = Hash(dto.Password),
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Age = dto.Age,
+            CountryOfOrigin = dto.CountryOfOrigin,
+            PhotoUrl = dto.PhotoUrl
         };
 
         var id = _repository.Insert(user);
@@ -42,6 +47,8 @@ public class UserService : IUserService
         if (user == null) return null;
         return user.PasswordHash == Hash(dto.Password) ? _tokenService.CreateToken(user.Id) : null;
     }
+
+    public User? GetById(int id) => _repository.GetById(id);
 
     private static string Hash(string password)
     {

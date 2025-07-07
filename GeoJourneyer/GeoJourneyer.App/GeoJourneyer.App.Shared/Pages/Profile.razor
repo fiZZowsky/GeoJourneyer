@@ -1,24 +1,54 @@
 ﻿@page "/profile"
+@inject ApiProxyClient ApiClient
 @inject AuthState AuthState
 @inject NavigationManager Navigation
+@using GeoJourneyer.Application.DTOs
 
 <h1>Profile</h1>
-@if (!AuthState.IsLoggedIn)
-    @if (!_initialized)
-    {
-        <p>Loading...</p>
-    }
-    else if (!AuthState.IsLoggedIn)
+@if (!_initialized)
+{
+    <p>Loading...</p>
+}
+else if (!AuthState.IsLoggedIn)
 {
     <p>You are not logged in.</p>
 }
+else if (profile == null)
+{
+    <p>Loading profile...</p>
+}
 else
 {
-    <p>Welcome, @AuthState.Username!</p>
+    <div class="profile-container">
+        <div class="avatar" style="@(GetAvatarStyle())">
+            @if (string.IsNullOrEmpty(profile.PhotoUrl))
+            {
+                <span>@profile.FirstName[..1]@profile.LastName[..1]</span>
+            }
+        </div>
+        <div class="info">
+            <p><strong>Nazwa użytkownika:</strong> @profile.Username</p>
+            <p><strong>Imię:</strong> @profile.FirstName</p>
+            <p><strong>Nazwisko:</strong> @profile.LastName</p>
+            <p><strong>Wiek:</strong> @profile.Age</p>
+            <p><strong>Kraj pochodzenia:</strong> @profile.CountryOfOrigin</p>
+            <p><strong>Liczba krajów odwiedzonych:</strong> @profile.VisitedCount</p>
+            <p><strong>Procent świata jaki zobaczono:</strong> @profile.VisitedPercent.ToString("0.##")%</p>
+        </div>
+    </div>
 }
 
 @code {
     private bool _initialized;
+    private UserProfileDto? profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState.IsLoggedIn)
+        {
+            profile = await ApiClient.GetAsync<UserProfileDto>("api/users/me");
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -35,4 +65,8 @@ else
             }
         }
     }
+
+    private string GetAvatarStyle() => string.IsNullOrEmpty(profile?.PhotoUrl)
+        ? "background-color:#00aa4f;color:white;display:flex;align-items:center;justify-content:center;" :
+          $"background-image:url('{profile!.PhotoUrl}');background-size:cover;background-position:center;";
 }
