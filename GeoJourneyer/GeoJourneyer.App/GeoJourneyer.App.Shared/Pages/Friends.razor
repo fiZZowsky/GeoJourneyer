@@ -1,0 +1,37 @@
+﻿@page "/friends"
+@inject ApiProxyClient ApiClient
+
+<h1>Friends</h1>
+<div class="search-container">
+    <input placeholder="Search by username" value="@query" @oninput="OnInput" />
+    @if (results != null)
+    {
+        <ul class="results">
+            @foreach (var u in results)
+            {
+                <li><a href="/user/@u.Id">@u.Username</a> <button @onclick="() => Invite(u.Id)">Invite</button></li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private string query = string.Empty;
+    private IEnumerable<PublicUserDto>? results;
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        query = e.Value?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            results = null;
+            return;
+        }
+        results = await ApiClient.GetAsync<IEnumerable<PublicUserDto>>($"api/users/search?q={Uri.EscapeDataString(query)}");
+    }
+
+    private async Task Invite(int id)
+    {
+        await ApiClient.PostAsync<object, object>($"api/users/{id}/invite", new { });
+    }
+}

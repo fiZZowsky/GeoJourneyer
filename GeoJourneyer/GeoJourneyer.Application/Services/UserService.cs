@@ -63,4 +63,6 @@ public class UserService : IUserService
         file.CopyTo(ms);
         return ms.ToArray();
     }
+
+    public IEnumerable<User> SearchByUsername(string text) => _repository.SearchByUsername(text);
 }

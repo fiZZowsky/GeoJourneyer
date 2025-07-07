@@ -1,0 +1,31 @@
+h1 {
+    margin-top: 1rem;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #a5d6a7;
+    color: #fff;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    .avatar span {
+        line-height: 1;
+    }
+
+.info p {
+    margin: 0.25rem 0;
+}

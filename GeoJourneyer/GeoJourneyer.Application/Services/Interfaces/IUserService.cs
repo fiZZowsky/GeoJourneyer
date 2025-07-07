@@ -8,4 +8,5 @@ public interface IUserService
     string? Register(RegisterUserDto dto);
     string? Authenticate(LoginUserDto dto);
     User? GetById(int id);
+    IEnumerable<User> SearchByUsername(string text);
 }

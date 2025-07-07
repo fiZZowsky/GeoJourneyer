@@ -13,5 +13,6 @@ public static class RepositoryCollectionExtension
         services.AddScoped<IUserCountryRepository, UserCountryRepository>();
         services.AddScoped<ITravelPlanRepository, TravelPlanRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IFriendRequestRepository, FriendRequestRepository>();
     }
 }

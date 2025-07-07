@@ -1,0 +1,41 @@
+﻿@page "/user/{id:int}"
+@inject ApiProxyClient ApiClient
+@using Microsoft.AspNetCore.Components
+
+<h1>User Profile</h1>
+@if (profile == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="profile-container">
+        <div class="avatar" style="@(GetAvatarStyle())">
+            @if (string.IsNullOrEmpty(profile.PhotoUrl))
+            {
+                <span>@profile.FirstName[..1]</span>
+            }
+        </div>
+        <div class="info">
+            <p><strong>Nazwa użytkownika:</strong> @profile.Username</p>
+            <p><strong>Imię:</strong> @profile.FirstName</p>
+            <p><strong>Kraj pochodzenia:</strong> @profile.CountryOfOrigin</p>
+            <p><strong>Liczba krajów odwiedzonych:</strong> @profile.VisitedCount</p>
+            <p><strong>Procent świata jaki zobaczono:</strong> @profile.VisitedPercent.ToString("0.##")%</p>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private PublicUserProfileDto? profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        profile = await ApiClient.GetAsync<PublicUserProfileDto>($"api/users/{id}");
+    }
+
+    private string GetAvatarStyle() => string.IsNullOrEmpty(profile?.PhotoUrl)
+        ? "background-color:#a5d6a7;color:white;display:flex;align-items:center;justify-content:center;"
+        : $"background-image:url('{profile!.PhotoUrl}');background-size:cover;background-position:center;";
+}

@@ -24,4 +24,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         using var connection = Context.CreateConnection();
         return connection.QuerySingleOrDefault<User>($"SELECT * FROM {TableName} WHERE Email = @email", new { email });
     }
+
+    public IEnumerable<User> SearchByUsername(string text)
+    {
+        using var connection = Context.CreateConnection();
+        return connection.Query<User>($"SELECT * FROM {TableName} WHERE Username LIKE @pattern", new { pattern = "%" + text + "%" });
+    }
 }
