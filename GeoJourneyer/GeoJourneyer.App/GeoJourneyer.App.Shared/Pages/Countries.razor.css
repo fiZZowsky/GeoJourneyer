@@ -1,0 +1,39 @@
+.countries-page {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+    .countries-page .list {
+        flex: 1 1 300px;
+    }
+
+    .countries-page ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .countries-page li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.25rem 0;
+    }
+
+    .countries-page button {
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: 0.25rem;
+        background-color: #2563eb;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .countries-page .remove-btn {
+        background-color: #ef4444;
+    }
+
+@media (max-width: 600px) {
+    .countries-page {
+        flex-direction: column;
+    }
+}

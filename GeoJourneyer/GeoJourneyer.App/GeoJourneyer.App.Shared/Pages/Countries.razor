@@ -1,29 +1,111 @@
 ﻿@page "/countries"
 @inject ApiProxyClient ApiClient
+@inject AuthState AuthState
 
 <PageTitle>Countries</PageTitle>
 
 <h1>Countries</h1>
 
-@if (countries == null)
+@if (allCountries == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <ul>
-        @foreach (var country in countries)
-        {
-            <li>@country.Name (@country.IsoCode)</li>
-        }
-    </ul>
+    <div class="countries-page">
+        <div class="list">
+            <h2>Visited</h2>
+            <ul>
+                @foreach (var vc in visited)
+                {
+                    <li>
+                        @vc.Country
+                        <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="list">
+            <h2>To Visit</h2>
+            <ul>
+                @foreach (var c in toVisit)
+                {
+                    <li>
+                        @c.Name
+                        <button @onclick="() => AddCountry(c)">Add</button>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 }
 
 @code {
-    private IEnumerable<CountryDto>? countries;
+    private IEnumerable<CountryDto>? allCountries;
+    private List<UserCountryDto> visited = new();
+    private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
+        allCountries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
+        var uid = GetUserId();
+        if (uid != null)
+        {
+            var list = await ApiClient.GetAsync<IEnumerable<UserCountryDto>>($"api/user-countries/{uid}");
+            if (list != null) visited = list.ToList();
+        }
+        ComputeToVisit();
+    }
+
+    private async Task AddCountry(CountryDto country)
+    {
+        var uid = GetUserId();
+        if (uid == null) return;
+        var payload = new UserCountryDto(0, uid.Value, country.Name, CountryStatus.Visited);
+        var id = await ApiClient.PostAsync<UserCountryDto, int>("api/user-countries", payload);
+        if (id != null)
+        {
+            visited.Add(payload with { Id = id.Value });
+            ComputeToVisit();
+        }
+    }
+
+    private async Task RemoveCountry(UserCountryDto country)
+    {
+        await ApiClient.DeleteAsync<object>($"api/user-countries/{country.Id}");
+        visited.Remove(country);
+        ComputeToVisit();
+    }
+
+    private void ComputeToVisit()
+    {
+        if (allCountries == null) return;
+        var visitedNames = visited.Select(v => v.Country).ToHashSet();
+        toVisit = allCountries.Where(c => !visitedNames.Contains(c.Name));
+    }
+
+    private int? GetUserId()
+    {
+        if (string.IsNullOrEmpty(AuthState.Token)) return null;
+        var parts = AuthState.Token.Split('.');
+        if (parts.Length < 2) return null;
+        try
+        {
+            var json = System.Text.Encoding.UTF8.GetString(Base64UrlDecode(parts[1]));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("sub", out var sub))
+            {
+                if (int.TryParse(sub.GetString(), out var id))
+                    return id;
+            }
+        }
+        catch { }
+        return null;
+    }
+
+    private static byte[] Base64UrlDecode(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
     }
 }

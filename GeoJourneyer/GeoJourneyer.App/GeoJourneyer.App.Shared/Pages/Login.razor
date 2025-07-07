@@ -37,7 +37,7 @@
                             @onmouseleave="HideLoginPassword"
                             @ontouchstart="ShowLoginPassword"
                             @ontouchend="HideLoginPassword">
-                        <i class="fa-solid fa-eye"></i>
+                        <i class="fa-solid @loginPasswordIcon"></i>
                     </button>
                 </div>
                 <button type="submit">Sign In</button>
@@ -98,7 +98,7 @@
                             @onmouseleave="HideRegPassword"
                             @ontouchstart="ShowRegPassword"
                             @ontouchend="HideRegPassword">
-                        <i class="fa-solid fa-eye"></i>
+                        <i class="fa-solid @regPasswordIcon"></i>
                     </button>
                 </div>
                 @if (regPasswordErrors.Any())
@@ -126,7 +126,7 @@
                             @onmouseleave="HideRegConfirmPassword"
                             @ontouchstart="ShowRegConfirmPassword"
                             @ontouchend="HideRegConfirmPassword">
-                        <i class="fa-solid fa-eye"></i>
+                        <i class="fa-solid @regConfirmPasswordIcon"></i>
                     </button>
                 </div>
                 @if (regConfirmErrors.Any())
@@ -169,6 +169,10 @@
     private string loginPasswordType = "password";
     private string regPasswordType = "password";
     private string regConfirmPasswordType = "password";
+
+    private string loginPasswordIcon = "fa-eye";
+    private string regPasswordIcon = "fa-eye";
+    private string regConfirmPasswordIcon = "fa-eye";
 
     private void ValidateRegUsername() =>
         regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
@@ -240,10 +244,39 @@
         }
     }
 
-    private void ShowLoginPassword()    => loginPasswordType = "text";
-    private void HideLoginPassword()    => loginPasswordType = "password";
-    private void ShowRegPassword()      => regPasswordType   = "text";
-    private void HideRegPassword()      => regPasswordType   = "password";
-    private void ShowRegConfirmPassword() => regConfirmPasswordType = "text";
-    private void HideRegConfirmPassword() => regConfirmPasswordType = "password";
+    private void ShowLoginPassword()
+    {
+        loginPasswordType = "text";
+        loginPasswordIcon = "fa-eye-slash";
+    }
+
+    private void HideLoginPassword()
+    {
+        loginPasswordType = "password";
+        loginPasswordIcon = "fa-eye";
+    }
+
+    private void ShowRegPassword()
+    {
+        regPasswordType = "text";
+        regPasswordIcon = "fa-eye-slash";
+    }
+
+    private void HideRegPassword()
+    {
+        regPasswordType = "password";
+        regPasswordIcon = "fa-eye";
+    }
+
+    private void ShowRegConfirmPassword()
+    {
+        regConfirmPasswordType = "text";
+        regConfirmPasswordIcon = "fa-eye-slash";
+    }
+
+    private void HideRegConfirmPassword()
+    {
+        regConfirmPasswordType = "password";
+        regConfirmPasswordIcon = "fa-eye";
+    }
 }

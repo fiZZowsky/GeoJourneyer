@@ -20,4 +20,6 @@ public class UserCountryService : IUserCountryService
     public int AddUserCountry(UserCountry country) => _repository.Insert(country);
 
     public void UpdateUserCountry(UserCountry country) => _repository.Update(country);
+
+    public void DeleteUserCountry(int id) => _repository.Delete(id);
 }

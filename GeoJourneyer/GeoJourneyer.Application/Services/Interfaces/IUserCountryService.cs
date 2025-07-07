@@ -7,4 +7,5 @@ public interface IUserCountryService
     IEnumerable<UserCountry> GetUserCountries(int userId);
     int AddUserCountry(UserCountry country);
     void UpdateUserCountry(UserCountry country);
+    void DeleteUserCountry(int id);
 }
