@@ -78,6 +78,10 @@ else
         {
             visited.Add(payload with { Id = id });
             ComputeToVisit();
+            if (showGlobe)
+            {
+                await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => v.Country).ToArray());
+            }
         }
     }
 
@@ -86,6 +90,10 @@ else
         await ApiClient.DeleteAsync<object>($"api/user-countries/{country.Id}");
         visited.Remove(country);
         ComputeToVisit();
+        if (showGlobe)
+        {
+            await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => v.Country).ToArray());
+        }
     }
 
     private void ComputeToVisit()
@@ -98,10 +106,15 @@ else
     private async Task ToggleView()
     {
         showGlobe = !showGlobe;
+        var visitedNames = visited.Select(v => v.Country).ToArray();
         if (showGlobe && !globeInit)
         {
-            await JS.InvokeVoidAsync("initGlobe");
+            await JS.InvokeVoidAsync("initGlobe", visitedNames);
             globeInit = true;
+        }
+        else if (showGlobe)
+        {
+            await JS.InvokeVoidAsync("updateVisitedCountries", visitedNames);
         }
     }
 
@@ -109,7 +122,7 @@ else
     {
         if (showGlobe && !globeInit)
         {
-            await JS.InvokeVoidAsync("initGlobe");
+            await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray());
             globeInit = true;
         }
     }
