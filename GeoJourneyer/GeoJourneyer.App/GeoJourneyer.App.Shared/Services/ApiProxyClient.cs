@@ -31,6 +31,14 @@ public class ApiProxyClient
         return await resp.Content.ReadFromJsonAsync<TResponse>();
     }
 
+    public async Task<TResponse?> PostMultipartAsync<TResponse>(string endpoint, MultipartFormDataContent content)
+    {
+        await EnsureTokenAsync();
+        var resp = await _httpClient.PostAsync(endpoint, content);
+        if (!resp.IsSuccessStatusCode) return default;
+        return await resp.Content.ReadFromJsonAsync<TResponse>();
+    }
+
     public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest payload)
     {
         await EnsureTokenAsync();

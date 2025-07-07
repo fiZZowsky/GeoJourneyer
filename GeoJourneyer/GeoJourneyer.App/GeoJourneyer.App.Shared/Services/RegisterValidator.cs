@@ -59,4 +59,48 @@ public class RegisterValidator
         }
         return errors;
     }
+
+    public List<string> ValidateFirstName(string firstName)
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(firstName))
+        {
+            errors.Add("First name is required");
+        }
+        return errors;
+    }
+
+    public List<string> ValidateLastName(string lastName)
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(lastName))
+        {
+            errors.Add("Last name is required");
+        }
+        return errors;
+    }
+
+    public List<string> ValidateAge(string age)
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(age))
+        {
+            errors.Add("Age is required");
+        }
+        else if (!int.TryParse(age, out var a) || a <= 0)
+        {
+            errors.Add("Invalid age");
+        }
+        return errors;
+    }
+
+    public List<string> ValidateCountry(string country)
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(country))
+        {
+            errors.Add("Country is required");
+        }
+        return errors;
+    }
 }

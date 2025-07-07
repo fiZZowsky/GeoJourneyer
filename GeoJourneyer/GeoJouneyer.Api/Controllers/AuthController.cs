@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] RegisterUserDto dto)
+    public IActionResult Register([FromForm] RegisterUserDto dto)
     {
         var token = _service.Register(dto);
         if (token == null) return Conflict();

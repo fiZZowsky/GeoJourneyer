@@ -138,6 +138,69 @@
                         }
                     </ul>
                 }
+                <div class="input-group">
+                    <i class="fa-solid fa-user icon"></i>
+                    <input @bind="regFirstName" @bind:event="oninput" @bind:after="ValidateFirstName"
+                           class="@GetInputClass(regFirstNameErrors)" placeholder="First name" />
+                </div>
+                @if (regFirstNameErrors.Any())
+                {
+                    <ul class="validation-message">
+                        @foreach (var e in regFirstNameErrors)
+                        {
+                            <li>@e</li>
+                        }
+                    </ul>
+                }
+
+                <div class="input-group">
+                    <i class="fa-solid fa-user icon"></i>
+                    <input @bind="regLastName" @bind:event="oninput" @bind:after="ValidateLastName"
+                           class="@GetInputClass(regLastNameErrors)" placeholder="Last name" />
+                </div>
+                @if (regLastNameErrors.Any())
+                {
+                    <ul class="validation-message">
+                        @foreach (var e in regLastNameErrors)
+                        {
+                            <li>@e</li>
+                        }
+                    </ul>
+                }
+
+                <div class="input-group">
+                    <i class="fa-solid fa-cake-candles icon"></i>
+                    <input type="number" @bind="regAge" @bind:event="oninput" @bind:after="ValidateAge"
+                           class="@GetInputClass(regAgeErrors)" placeholder="Age" />
+                </div>
+                @if (regAgeErrors.Any())
+                {
+                    <ul class="validation-message">
+                        @foreach (var e in regAgeErrors)
+                        {
+                            <li>@e</li>
+                        }
+                    </ul>
+                }
+
+                <div class="input-group">
+                    <i class="fa-solid fa-flag icon"></i>
+                    <input @bind="regCountry" @bind:event="oninput" @bind:after="ValidateCountry"
+                           class="@GetInputClass(regCountryErrors)" placeholder="Country of origin" />
+                </div>
+                @if (regCountryErrors.Any())
+                {
+                    <ul class="validation-message">
+                        @foreach (var e in regCountryErrors)
+                        {
+                            <li>@e</li>
+                        }
+                    </ul>
+                }
+
+                <div class="input-group">
+                    <input type="file" @onchange="OnFileSelected" />
+                </div>
 
                 <button type="submit">Sign Up</button>
             </form>
@@ -160,11 +223,20 @@
     private string regEmail = string.Empty;
     private string regPassword = string.Empty;
     private string regPasswordConfirm = string.Empty;
+    private string regFirstName = string.Empty;
+    private string regLastName = string.Empty;
+    private string regAge = string.Empty;
+    private string regCountry = string.Empty;
+    private IBrowserFile? regPhoto;
 
     private List<string> regUsernameErrors = new();
     private List<string> regEmailErrors = new();
     private List<string> regPasswordErrors = new();
     private List<string> regConfirmErrors = new();
+    private List<string> regFirstNameErrors = new();
+    private List<string> regLastNameErrors = new();
+    private List<string> regAgeErrors = new();
+    private List<string> regCountryErrors = new();
 
     private string loginPasswordType = "password";
     private string regPasswordType = "password";
@@ -189,16 +261,36 @@
     private void ValidateConfirmPassword() =>
         regConfirmErrors = RegisterValidator.ValidateConfirmPassword(regPassword, regPasswordConfirm);
 
+    private void ValidateFirstName() =>
+   regFirstNameErrors = RegisterValidator.ValidateFirstName(regFirstName);
+
+    private void ValidateLastName() =>
+        regLastNameErrors = RegisterValidator.ValidateLastName(regLastName);
+
+    private void ValidateAge() =>
+        regAgeErrors = RegisterValidator.ValidateAge(regAge);
+
+    private void ValidateCountry() =>
+        regCountryErrors = RegisterValidator.ValidateCountry(regCountry);
+
     private bool ValidateForm()
     {
         ValidateRegUsername();
         ValidateRegEmail();
         ValidateRegPassword();
         ValidateConfirmPassword();
+        ValidateFirstName();
+        ValidateLastName();
+        ValidateAge();
+        ValidateCountry();
         return !(regUsernameErrors.Any()
               || regEmailErrors.Any()
               || regPasswordErrors.Any()
-              || regConfirmErrors.Any());
+              || regConfirmErrors.Any()
+              || regFirstNameErrors.Any()
+              || regLastNameErrors.Any()
+              || regAgeErrors.Any()
+              || regCountryErrors.Any());
     }
 
     private static string GetInputClass(List<string> errors) =>
@@ -227,9 +319,22 @@
     {
         if (!ValidateForm()) return;
 
-        var response = await ApiClient.PostAsync<object, AuthTokenDto>(
-            "api/auth/register",
-            new { Username = regUsername, Email = regEmail, Password = regPassword });
+        var content = new MultipartFormDataContent();
+        content.Add(new StringContent(regUsername), "Username");
+        content.Add(new StringContent(regEmail), "Email");
+        content.Add(new StringContent(regPassword), "Password");
+        content.Add(new StringContent(regFirstName), "FirstName");
+        content.Add(new StringContent(regLastName), "LastName");
+        content.Add(new StringContent(regAge), "Age");
+        content.Add(new StringContent(regCountry), "CountryOfOrigin");
+        if (regPhoto != null)
+        {
+            var fileContent = new StreamContent(regPhoto.OpenReadStream(10 * 1024 * 1024));
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(regPhoto.ContentType);
+            content.Add(fileContent, "Photo", regPhoto.Name);
+        }
+
+        var response = await ApiClient.PostMultipartAsync<AuthTokenDto>("api/auth/register", content);
 
         if (response?.Token != null)
         {
@@ -278,5 +383,9 @@
     {
         regConfirmPasswordType = "password";
         regConfirmPasswordIcon = "fa-eye";
+    }
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        regPhoto = e.File;
     }
 }
