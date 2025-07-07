@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
             LastName = user.LastName,
             Age = user.Age,
             CountryOfOrigin = user.CountryOfOrigin,
-            PhotoUrl = user.PhotoUrl,
+            PhotoUrl = user.Photo != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(user.PhotoUrl)}" : null,
             VisitedCount = visited,
             VisitedPercent = total > 0 ? visited * 100.0 / total : 0
         };

@@ -4,6 +4,7 @@ using GeoJourneyer.Application.DTOs;
 using GeoJourneyer.Application.Repositories;
 using GeoJourneyer.Application.Services.Interfaces;
 using GeoJourneyer.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace GeoJourneyer.Application.Services;
 
@@ -34,7 +35,7 @@ public class UserService : IUserService
             LastName = dto.LastName,
             Age = dto.Age,
             CountryOfOrigin = dto.CountryOfOrigin,
-            PhotoUrl = dto.PhotoUrl
+            Photo = dto.Photo != null ? ReadFile(dto.Photo) : null
         };
 
         var id = _repository.Insert(user);
@@ -54,5 +55,12 @@ public class UserService : IUserService
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
         return Convert.ToHexString(bytes);
+    }
+
+    private static byte[] ReadFile(IFormFile file)
+    {
+        using var ms = new MemoryStream();
+        file.CopyTo(ms);
+        return ms.ToArray();
     }
 }

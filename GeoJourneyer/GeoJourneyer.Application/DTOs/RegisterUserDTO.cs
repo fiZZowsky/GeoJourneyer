@@ -1,4 +1,6 @@
-﻿namespace GeoJourneyer.Application.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace GeoJourneyer.Application.DTOs;
 
 public record RegisterUserDto(
     string Username,
@@ -8,4 +10,4 @@ public record RegisterUserDto(
     string LastName = "",
     int Age = 0,
     string CountryOfOrigin = "",
-    string? PhotoUrl = null);
+    IFormFile? Photo = null);

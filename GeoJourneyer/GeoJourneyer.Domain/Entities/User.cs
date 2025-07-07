@@ -9,5 +9,5 @@ public class User : BaseEntity
     public string LastName { get; set; } = string.Empty;
     public int Age { get; set; }
     public string CountryOfOrigin { get; set; } = string.Empty;
-    public string? PhotoUrl { get; set; }
+    public byte[]? Photo { get; set; }
 }
