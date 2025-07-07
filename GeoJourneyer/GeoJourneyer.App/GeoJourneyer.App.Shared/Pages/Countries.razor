@@ -1,10 +1,12 @@
 ﻿@page "/countries"
 @inject ApiProxyClient ApiClient
 @inject AuthState AuthState
+@inject IJSRuntime JS
 
 <PageTitle>Countries</PageTitle>
 
 <h1>Countries</h1>
+<button class="view-toggle" @onclick="ToggleView">@(showGlobe ? "Show List" : "Show Globe")</button>
 
 @if (allCountries == null)
 {
@@ -12,35 +14,44 @@
 }
 else
 {
-    <div class="countries-page">
-        <div class="list">
-            <h2>Visited</h2>
-            <ul>
-                @foreach (var vc in visited)
-                {
-                    <li>
-                        @vc.Country
-                        <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
-                    </li>
-                }
-            </ul>
+    @if (showGlobe)
+    {
+        <div id="globeContainer" style="width:100%; height:600px;"></div>
+    }
+    else
+    {
+        <div class="countries-page">
+            <div class="list">
+                <h2>Visited</h2>
+                <ul>
+                    @foreach (var vc in visited)
+                    {
+                        <li>
+                            @vc.Country
+                            <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="list">
+                <h2>To Visit</h2>
+                <ul>
+                    @foreach (var c in toVisit)
+                    {
+                        <li>
+                            @c.Name
+                            <button @onclick="() => AddCountry(c)">Add</button>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
-        <div class="list">
-            <h2>To Visit</h2>
-            <ul>
-                @foreach (var c in toVisit)
-                {
-                    <li>
-                        @c.Name
-                        <button @onclick="() => AddCountry(c)">Add</button>
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
+   }
 }
 
 @code {
+    private bool showGlobe = false;
+    private bool globeInit = false;
     private IEnumerable<CountryDto>? allCountries;
     private List<UserCountryDto> visited = new();
     private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
@@ -82,6 +93,25 @@ else
         if (allCountries == null) return;
         var visitedNames = visited.Select(v => v.Country).ToHashSet();
         toVisit = allCountries.Where(c => !visitedNames.Contains(c.Name));
+    }
+
+    private async Task ToggleView()
+    {
+        showGlobe = !showGlobe;
+        if (showGlobe && !globeInit)
+        {
+            await JS.InvokeVoidAsync("initGlobe");
+            globeInit = true;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (showGlobe && !globeInit)
+        {
+            await JS.InvokeVoidAsync("initGlobe");
+            globeInit = true;
+        }
     }
 
     private int? GetUserId()
