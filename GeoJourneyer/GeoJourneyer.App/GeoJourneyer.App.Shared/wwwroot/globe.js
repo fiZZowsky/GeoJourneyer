@@ -31,18 +31,26 @@ window.initGlobe = function (visited, dotNetHelper) {
                     .polygonSideColor(() => 'rgba(0,0,0,0)')
                     .polygonStrokeColor(() => '#000')
                     .onPolygonClick(d => {
+                        const name = d.properties.name;
+                        if (!window.visitedCountries) window.visitedCountries = [];
+                        if (window.visitedCountries.indexOf(name) >= 0) {
+                            window.visitedCountries = window.visitedCountries.filter(c => c !== name);
+                        } else {
+                            window.visitedCountries.push(name);
+                        }
+                        window.updateVisitedCountries(window.visitedCountries);
                         if (window.dotNetHelper) {
-                            window.dotNetHelper.invokeMethodAsync('ToggleCountry', d.properties.name);
+                            window.dotNetHelper.invokeMethodAsync('ToggleCountry', name);
                         }
                     })
                     .labelsData(labels)
                     .labelLat(d => d.lat)
                     .labelLng(d => d.lon)
                     .labelText(d => d.name)
-                    .labelColor(() => 'white')
+                    .labelColor(() => 'black')
                     .labelSize(0.6)
                     .labelDotRadius(0)
-                    .labelAltitude(0.01);
+                    .labelAltitude(0.07);
                 window.updateVisitedCountries(visited || []);
             });
     } else {
