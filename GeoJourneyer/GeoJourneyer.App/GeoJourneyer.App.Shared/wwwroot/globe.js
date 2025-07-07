@@ -12,7 +12,17 @@ window.initGlobe = function (visited, dotNetHelper) {
                 const countries = window.topojson.feature(worldData, worldData.objects.countries).features;
                 window.countriesData = countries;
                 const labels = countries.map(c => {
-                    const center = window.d3.geoCentroid(c);
+                    const center = (function (feature) {
+                        const coords = [];
+                        if (feature.geometry.type === 'Polygon') {
+                            feature.geometry.coordinates.forEach(p => coords.push(...p));
+                        } else if (feature.geometry.type === 'MultiPolygon') {
+                            feature.geometry.coordinates.forEach(mp => mp.forEach(p => coords.push(...p)));
+                        }
+                        const total = coords.length;
+                        const sum = coords.reduce((acc, cur) => [acc[0] + cur[0], acc[1] + cur[1]], [0, 0]);
+                        return [sum[0] / total, sum[1] / total];
+                    })(c);
                     return { lat: center[1], lon: center[0], name: c.properties.name };
                 });
                 window.globeInstance
