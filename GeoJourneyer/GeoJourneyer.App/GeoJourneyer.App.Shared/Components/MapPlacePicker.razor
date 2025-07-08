@@ -1,0 +1,36 @@
+@inject IJSRuntime JS
+@if (Places != null && Places.Any())
+{
+    <div class="map-picker" id="@mapId"></div>
+}
+@code {
+    [Parameter] public IEnumerable<PlaceDto>? Places { get; set; }
+    [Parameter] public HashSet<int> Selected { get; set; } = new();
+    [Parameter] public EventCallback<(int id, bool selected)> OnToggle { get; set; }
+
+    private string mapId = $"map_{Guid.NewGuid():N}";
+    private DotNetObjectReference<MapPlacePicker>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Places != null)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("mapPlacePicker.init", mapId, Places, Selected.ToArray(), objRef);
+        }
+    }
+
+    [JSInvokable]
+    public async Task TogglePlace(int id, bool selected)
+    {
+        if (OnToggle.HasDelegate)
+        {
+            await OnToggle.InvokeAsync((id, selected));
+        }
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

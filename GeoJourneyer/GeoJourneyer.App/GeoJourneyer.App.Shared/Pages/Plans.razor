@@ -33,6 +33,11 @@ else
                     </label>
                 }
             </div>
+            <button @onclick="ToggleMap">@(showMap ? "Hide Map" : "Select on Map")</button>
+            @if (showMap)
+            {
+                <MapPlacePicker Places="places" Selected="selectedPlaceIds" OnToggle="TogglePlaceFromMap" />
+            }
         }
         <button @onclick="CreatePlan">Create</button>
     </div>
@@ -60,6 +65,7 @@ else
     private HashSet<int> selectedPlaceIds = new();
     private int selectedCountryId;
     private string planName = string.Empty;
+    private bool showMap = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,6 +96,17 @@ else
             selectedPlaceIds.Add(id);
         else
             selectedPlaceIds.Remove(id);
+    }
+
+    private void ToggleMap()
+    {
+        showMap = !showMap;
+    }
+
+    private void TogglePlaceFromMap((int id, bool selected) info)
+    {
+        TogglePlace(info.id, info.selected);
+        StateHasChanged();
     }
 
     private async Task CreatePlan()

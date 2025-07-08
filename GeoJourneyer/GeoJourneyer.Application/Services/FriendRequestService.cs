@@ -33,6 +33,7 @@ public class FriendRequestService : IFriendRequestService
         _notifications.Add(new Notification
         {
             UserId = toUserId,
+            FromUserId = fromUserId,
             Type = NotificationType.FriendRequest,
             Text = text
         });

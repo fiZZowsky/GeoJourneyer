@@ -2,16 +2,18 @@
 using System.Text.Json;
 namespace GeoJourneyer.App.Shared.Services;
 
-public class NotificationService
+public class NotificationService : IDisposable
 {
     private readonly ApiProxyClient _apiClient;
     private readonly AuthState _authState;
     private readonly List<Notification> _notifications = new();
+    private System.Threading.Timer? _timer;
 
     public NotificationService(ApiProxyClient apiClient, AuthState authState)
     {
         _apiClient = apiClient;
         _authState = authState;
+        _authState.OnChange += AuthChanged;
     }
 
     public IReadOnlyList<Notification> Notifications => _notifications;
@@ -85,5 +87,47 @@ public class NotificationService
         }
     }
 
+    public async Task InitializeAsync()
+    {
+        if (_authState.IsLoggedIn)
+        {
+            await LoadAsync();
+            StartTimer();
+        }
+    }
+
+    private void AuthChanged()
+    {
+        if (_authState.IsLoggedIn)
+        {
+            _ = LoadAsync();
+            StartTimer();
+        }
+        else
+        {
+            StopTimer();
+            _notifications.Clear();
+            Notify();
+        }
+    }
+
+    private void StartTimer()
+    {
+        _timer?.Dispose();
+        _timer = new System.Threading.Timer(async _ => await LoadAsync(), null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+    }
+
+    private void StopTimer()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+
     private void Notify() => OnChange?.Invoke();
+
+    public void Dispose()
+    {
+        _authState.OnChange -= AuthChanged;
+        StopTimer();
+    }
 }

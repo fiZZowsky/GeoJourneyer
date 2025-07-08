@@ -33,4 +33,6 @@ builder.Services
 var host = builder.Build();
 var auth = host.Services.GetRequiredService<AuthState>();
 await auth.InitializeAsync();
+var notifications = host.Services.GetRequiredService<NotificationService>();
+await notifications.InitializeAsync();
 await host.RunAsync();

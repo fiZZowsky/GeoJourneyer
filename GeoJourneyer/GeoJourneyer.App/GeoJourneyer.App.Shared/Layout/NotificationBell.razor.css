@@ -51,3 +51,8 @@
             background: none;
             cursor: pointer;
         }
+
+        .notify-list li.no-notifications {
+            text-align: center;
+            color: #666;
+        }
