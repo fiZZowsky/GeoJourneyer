@@ -16,7 +16,7 @@ else
 {
     <div class="plan-form">
         <input placeholder="Plan name" @bind="planName" />
-        <select @bind="selectedCountryId" @onchange="OnCountryChanged">
+        <select @bind="selectedCountryId" @bind:after="OnCountryChanged">
             <option value="0">Select country</option>
             @foreach (var c in countries)
             {
@@ -71,7 +71,7 @@ else
         }
     }
 
-    private async Task OnCountryChanged(ChangeEventArgs e)
+    private async Task OnCountryChanged()
     {
         selectedPlaceIds.Clear();
         if (selectedCountryId > 0)

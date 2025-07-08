@@ -1,5 +1,6 @@
 ﻿@inject ApiProxyClient ApiClient
 @inject AuthState AuthState
+@inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Components.Routing
 
 <nav class="navbar">
@@ -37,10 +38,25 @@
         AuthState.OnChange += StateHasChanged;
     }
 
+    private readonly string[] _protectedRoutes =
+    [
+        "countries",
+        "plans",
+        "friends",
+        "profile"
+    ];
+
+
     private async Task Logout()
     {
         ApiClient.SetToken(null);
         await AuthState.SignOutAsync();
+
+        var current = Navigation.ToBaseRelativePath(Navigation.Uri);
+        if (_protectedRoutes.Any(p => current.StartsWith(p, System.StringComparison.OrdinalIgnoreCase)))
+        {
+            Navigation.NavigateTo("/");
+        }
     }
 
     public void Dispose()

@@ -22,7 +22,7 @@ public class PlacesController : ControllerBase
         return Ok(id);
     }
 
-    [HttpGet("/countries/{countryId}/places")]
+    [HttpGet("countries/{countryId}/places")]
     public IActionResult GetByCountry(int countryId)
     {
         return Ok(_service.GetByCountry(countryId));
