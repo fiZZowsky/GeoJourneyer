@@ -28,6 +28,7 @@ window.initGlobe = function (visited, dotNetHelper) {
                         if (window.dotNetHelper) {
                             window.dotNetHelper.invokeMethodAsync('ToggleCountry', name);
                         }
+                    });
 
                 window.updateVisitedCountries(visited || []);
             });

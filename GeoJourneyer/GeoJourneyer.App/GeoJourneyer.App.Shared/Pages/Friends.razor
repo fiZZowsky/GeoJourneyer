@@ -9,7 +9,31 @@
         <ul class="results">
             @foreach (var u in results)
             {
-                <li><a href="/user/@u.Id">@u.Username</a> <button @onclick="() => Invite(u.Id)">Invite</button></li>
+                <li>
+                    <a href="/user/@u.Id">@u.Username</a>
+                    @if (statuses.TryGetValue(u.Id, out var status))
+                    {
+                        @switch (status)
+                        {
+                            case FriendRequestStatus.Pending:
+                                <span class="pending">Waiting for accept</span>
+                                ;
+                                break;
+                            case FriendRequestStatus.Accepted:
+                                <span class="accepted">✔</span>
+                                ;
+                                break;
+                            default:
+                                <button @onclick="() => Invite(u.Id)">Invite</button>
+                                ;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        <button @onclick="() => Invite(u.Id)">Invite</button>
+                    }
+                </li>
             }
         </ul>
     }
@@ -18,6 +42,7 @@
 @code {
     private string query = string.Empty;
     private IEnumerable<PublicUserDto>? results;
+    private Dictionary<int, FriendRequestStatus> statuses = new();
 
     private async Task OnInput(ChangeEventArgs e)
     {
@@ -28,10 +53,26 @@
             return;
         }
         results = await ApiClient.GetAsync<IEnumerable<PublicUserDto>>($"api/users/search?q={Uri.EscapeDataString(query)}");
+        statuses.Clear();
+        if (results != null)
+        {
+            foreach (var u in results)
+            {
+                var req = await ApiClient.GetAsync<FriendRequestDto>($"api/users/{u.Id}/invite");
+                if (req != null)
+                {
+                    statuses[u.Id] = req.Status;
+                }
+            }
+        }
     }
 
     private async Task Invite(int id)
     {
-        await ApiClient.PostAsync<object, object>($"api/users/{id}/invite", new { });
+        var resp = await ApiClient.PostAsync<object, int?>($"api/users/{id}/invite", new { });
+        if (resp != null)
+        {
+            statuses[id] = FriendRequestStatus.Pending;
+        }
     }
 }

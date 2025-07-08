@@ -100,4 +100,27 @@ public class UsersController : ControllerBase
         if (result == 0) return Conflict();
         return Ok(result);
     }
+
+    [HttpGet("{id}/invite")]
+    public IActionResult GetInvite(int id)
+    {
+        var sub = User.FindFirst(JwtRegisteredClaimNames.Sub) ?? User.FindFirst(ClaimTypes.NameIdentifier);
+        if (sub == null) return Unauthorized();
+        var fromId = int.Parse(sub.Value);
+        var req = _friendService.GetBetweenUsers(fromId, id);
+        if (req == null) return NotFound();
+        return Ok(req);
+    }
+
+    [HttpPost("{id}/accept")]
+    public IActionResult Accept(int id)
+    {
+        var sub = User.FindFirst(JwtRegisteredClaimNames.Sub) ?? User.FindFirst(ClaimTypes.NameIdentifier);
+        if (sub == null) return Unauthorized();
+        var toId = int.Parse(sub.Value);
+        var req = _friendService.GetBetweenUsers(id, toId);
+        if (req == null) return NotFound();
+        _friendService.UpdateStatus(req.Id, FriendRequestStatus.Accepted);
+        return NoContent();
+    }
 }

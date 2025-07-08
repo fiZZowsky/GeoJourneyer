@@ -35,21 +35,23 @@
 @code {
     private bool showList;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         NotificationService.OnChange += StateHasChanged;
+        await NotificationService.LoadAsync();
     }
 
     private void Toggle() => showList = !showList;
 
-    private void Select(Notification n)
+    private async Task Select(Notification n)
     {
-        NotificationService.MarkAsRead(n);
+        await NotificationService.MarkAsReadAsync(n);
     }
 
-    private void Accept(Notification n)
+    private async Task Accept(Notification n)
     {
         NotificationService.MarkAsRead(n);
+        await NotificationService.MarkAsReadAsync(n);
     }
 
     private void Reject(Notification n)
