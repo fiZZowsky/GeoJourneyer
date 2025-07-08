@@ -32,13 +32,10 @@ public class TravelPlanRepository : BaseRepository<TravelPlan>, ITravelPlanRepos
         }
     }
 
-    public IEnumerable<TravelPlanInfoDto> GetInfos(int userId)
+    public IEnumerable<TravelPlan> GetInfos(int userId)
     {
         using var connection = Context.CreateConnection();
-        var sql = @"SELECT p.Id, p.UserId, p.CountryId, p.Name, p.CreatedAt,
-                        (SELECT COUNT(*) FROM TravelPlanStops s WHERE s.TravelPlanId = p.Id) AS PlaceCount
-                    FROM TravelPlans p
-                    WHERE p.UserId = @userId";
-        return connection.Query<TravelPlanInfoDto>(sql, new { userId });
+        var sql = $"SELECT * FROM {TableName} WHERE UserId = @userId";
+        return connection.Query<TravelPlan>(sql, new { userId });
     }
 }

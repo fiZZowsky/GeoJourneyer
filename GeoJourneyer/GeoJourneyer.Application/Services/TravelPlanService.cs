@@ -18,7 +18,18 @@ public class TravelPlanService : ITravelPlanService
     }
 
     public IEnumerable<TravelPlanInfoDTO> GetPlans(int userId)
-        => _planRepository.GetInfos(userId);
+    {
+        var plans = _planRepository.GetInfos(userId);
+        return plans.Select(p => new TravelPlanInfoDTO
+        {
+            Id = p.Id,
+            UserId = p.UserId,
+            CountryId = p.CountryId,
+            Name = p.Name,
+            CreatedAt = p.CreatedAt,
+            PlaceCount = _planRepository.GetStops(p.Id).Count()
+        });
+    }
 
     public int CreatePlan(TravelPlan plan, IEnumerable<int> placeIds)
     {
