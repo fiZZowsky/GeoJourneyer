@@ -51,7 +51,10 @@ public class NotificationService
         {
             var parts = token.Split('.');
             if (parts.Length < 2) return 0;
-            var payload = parts[1].PadRight(parts[1].Length + (4 - parts[1].Length % 4) % 4, '=');
+            var payload = parts[1]
+                .Replace('-', '+')
+                .Replace('_', '/');
+            payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(payload));
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.TryGetProperty("sub", out var sub))
@@ -70,6 +73,14 @@ public class NotificationService
         if (!notification.IsRead)
         {
             notification.IsRead = true;
+            Notify();
+        }
+    }
+
+    public void Remove(Notification notification)
+    {
+        if (_notifications.Remove(notification))
+        {
             Notify();
         }
     }

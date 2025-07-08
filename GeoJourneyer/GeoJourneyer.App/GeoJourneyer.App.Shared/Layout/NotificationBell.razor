@@ -41,7 +41,14 @@
         await NotificationService.LoadAsync();
     }
 
-    private void Toggle() => showList = !showList;
+    private async Task Toggle()
+    {
+        showList = !showList;
+        if (showList)
+        {
+            await NotificationService.LoadAsync();
+        }
+    }
 
     private async Task Select(Notification n)
     {
