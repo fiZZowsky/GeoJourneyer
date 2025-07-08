@@ -1,0 +1,140 @@
+﻿@page "/plans"
+@inject ApiProxyClient ApiClient
+@inject AuthState AuthState
+
+<h1>Plans</h1>
+
+@if (!AuthState.IsLoggedIn)
+{
+    <p>You are not logged in.</p>
+}
+else if (countries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="plan-form">
+        <input placeholder="Plan name" @bind="planName" />
+        <select @bind="selectedCountryId" @onchange="OnCountryChanged">
+            <option value="0">Select country</option>
+            @foreach (var c in countries)
+            {
+                <option value="@c.Id">@c.Name</option>
+            }
+        </select>
+        @if (places != null && places.Any())
+        {
+            <div class="places-list">
+                @foreach (var p in places)
+                {
+                    <label>
+                        <input type="checkbox" value="@p.Id" checked="@selectedPlaceIds.Contains(p.Id)" @onchange="e => TogglePlace(p.Id, ((ChangeEventArgs)e).Value != null)" /> @p.Name
+                    </label>
+                }
+            </div>
+        }
+        <button @onclick="CreatePlan">Create</button>
+    </div>
+
+    <h2>Your Plans</h2>
+    @if (plans == null)
+    {
+        <p>Loading plans...</p>
+    }
+    else
+    {
+        <ul class="plans-list">
+            @foreach (var p in plans)
+            {
+                <li>@p.Name (@GetCountryName(p.CountryId))</li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private IEnumerable<CountryDto>? countries;
+    private IEnumerable<PlaceDto>? places;
+    private List<TravelPlanInfoDto>? plans;
+    private HashSet<int> selectedPlaceIds = new();
+    private int selectedCountryId;
+    private string planName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
+        var uid = GetUserId();
+        if (uid != null)
+        {
+            plans = await ApiClient.GetAsync<List<TravelPlanInfoDto>>($"api/travel-plans/{uid}");
+        }
+    }
+
+    private async Task OnCountryChanged(ChangeEventArgs e)
+    {
+        selectedPlaceIds.Clear();
+        if (selectedCountryId > 0)
+        {
+            places = await ApiClient.GetAsync<IEnumerable<PlaceDto>>($"api/places/countries/{selectedCountryId}/places");
+        }
+        else
+        {
+            places = null;
+        }
+    }
+
+    private void TogglePlace(int id, bool selected)
+    {
+        if (selected)
+            selectedPlaceIds.Add(id);
+        else
+            selectedPlaceIds.Remove(id);
+    }
+
+    private async Task CreatePlan()
+    {
+        var uid = GetUserId();
+        if (uid == null || selectedCountryId == 0 || !selectedPlaceIds.Any() || string.IsNullOrWhiteSpace(planName))
+            return;
+
+        var dto = new TravelPlanDto(uid.Value, selectedCountryId, planName, selectedPlaceIds);
+        var id = await ApiClient.PostAsync<TravelPlanDto, int>("api/travel-plans", dto);
+        if (id > 0)
+        {
+            plans ??= new List<TravelPlanInfoDto>();
+            plans.Add(new TravelPlanInfoDto { Id = id, UserId = uid.Value, CountryId = selectedCountryId, Name = planName });
+            planName = string.Empty;
+            selectedCountryId = 0;
+            selectedPlaceIds.Clear();
+            places = null;
+        }
+    }
+
+    private string GetCountryName(int id) => countries?.FirstOrDefault(c => c.Id == id)?.Name ?? string.Empty;
+
+    private int? GetUserId()
+    {
+        if (string.IsNullOrEmpty(AuthState.Token)) return null;
+        var parts = AuthState.Token.Split('.');
+        if (parts.Length < 2) return null;
+        try
+        {
+            var json = System.Text.Encoding.UTF8.GetString(Base64UrlDecode(parts[1]));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("sub", out var sub))
+            {
+                if (int.TryParse(sub.GetString(), out var id))
+                    return id;
+            }
+        }
+        catch { }
+        return null;
+    }
+
+    private static byte[] Base64UrlDecode(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
+    }
+}
