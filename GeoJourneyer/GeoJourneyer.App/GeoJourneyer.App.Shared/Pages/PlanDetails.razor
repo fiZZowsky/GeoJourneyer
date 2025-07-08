@@ -1,0 +1,72 @@
+@page "/plans/{PlanId:int}"
+@inject ApiProxyClient ApiClient
+@inject AuthState AuthState
+@inject NavigationManager Nav
+
+<h1>Plan details</h1>
+@if (plan == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="detail-header">
+        <input readonly value="@plan.Name" />
+        <button class="edit-btn" @onclick="Edit">Edit</button>
+    </div>
+    <ol>
+        @foreach (var s in stops.OrderBy(s => s.Order))
+        {
+            if (places.TryGetValue(s.PlaceId, out var p))
+            {
+                <li>@p.Name</li>
+            }
+        }
+    </ol>
+}
+
+@code {
+    [Parameter] public int PlanId { get; set; }
+    private TravelPlanInfoDto? plan;
+    private List<TravelPlanStop> stops = new();
+    private Dictionary<int, PlaceDto> places = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uid = GetUserId();
+        if (uid == null) return;
+        var plans = await ApiClient.GetAsync<List<TravelPlanInfoDto>>($"api/travel-plans/{uid}");
+        plan = plans?.FirstOrDefault(p => p.Id == PlanId);
+        if (plan != null)
+        {
+            var s = await ApiClient.GetAsync<IEnumerable<TravelPlanStop>>($"api/travel-plans/{PlanId}/stops");
+            if (s != null) stops = s.ToList();
+            var pl = await ApiClient.GetAsync<IEnumerable<PlaceDto>>($"api/places/countries/{plan.CountryId}/places");
+            if (pl != null) places = pl.ToDictionary(p => p.Id);
+        }
+    }
+
+    private void Edit() => Nav.NavigateTo($"/plans/{PlanId}/edit");
+
+    private int? GetUserId()
+    {
+        if (string.IsNullOrEmpty(AuthState.Token)) return null;
+        var parts = AuthState.Token.Split('.');
+        if (parts.Length < 2) return null;
+        try
+        {
+            var json = System.Text.Encoding.UTF8.GetString(Base64UrlDecode(parts[1]));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("sub", out var sub) && int.TryParse(sub.GetString(), out var id))
+                return id;
+        }
+        catch { }
+        return null;
+    }
+
+    private static byte[] Base64UrlDecode(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
+    }
+}

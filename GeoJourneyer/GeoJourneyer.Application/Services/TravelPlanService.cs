@@ -2,6 +2,7 @@
 using GeoJourneyer.Domain.Entities;
 using GeoJourneyer.Domain.Queries;
 using GeoJourneyer.Infrastructure.Repositories;
+using GeoJourneyer.Application.DTOs;
 
 namespace GeoJourneyer.Application.Services;
 
@@ -16,8 +17,8 @@ public class TravelPlanService : ITravelPlanService
         _placeRepository = placeRepository;
     }
 
-    public IEnumerable<TravelPlan> GetPlans(int userId)
-        => _planRepository.GetAll(new TravelPlanQuery { UserId = userId });
+    public IEnumerable<TravelPlanInfoDTO> GetPlans(int userId)
+        => _planRepository.GetInfos(userId);
 
     public int CreatePlan(TravelPlan plan, IEnumerable<int> placeIds)
     {
@@ -26,6 +27,7 @@ public class TravelPlanService : ITravelPlanService
             throw new ArgumentException("At least one place is required", nameof(placeIds));
         }
 
+        plan.CreatedAt = DateTime.UtcNow;
         var id = _planRepository.Insert(plan);
         var order = 0;
         var stops = placeIds.Select(pid => new TravelPlanStop

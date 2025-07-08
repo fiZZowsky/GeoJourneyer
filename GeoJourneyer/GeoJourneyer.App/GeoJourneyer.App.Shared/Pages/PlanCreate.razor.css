@@ -1,0 +1,27 @@
+.create-plan {
+    display: flex;
+    gap: 1rem
+}
+
+.controls {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem
+}
+
+    .controls .results {
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 0;
+        list-style: none
+    }
+
+#selectedList {
+    padding-left: 1rem;
+}
+
+.map {
+    flex: 1;
+    height: 500px
+}

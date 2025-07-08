@@ -1,6 +1,6 @@
-﻿namespace GeoJourneyer.App.Shared.Services;
+﻿namespace GeoJourneyer.Application.DTOs;
 
-public class TravelPlanInfoDto
+public class TravelPlanInfoDTO
 {
     public int Id { get; set; }
     public int UserId { get; set; }

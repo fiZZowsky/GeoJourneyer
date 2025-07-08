@@ -1,19 +1,18 @@
-.plan-form {
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.places-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
 .plans-list {
     list-style: none;
-    padding: 0;
+    padding: 0
+}
+
+    .plans-list li {
+        margin-bottom: .5rem
+    }
+
+    .plans-list .meta {
+        margin-left: .5rem;
+        color: gray;
+        font-size: .8rem
+    }
+
+.new-btn {
+    margin-bottom: 1rem
 }

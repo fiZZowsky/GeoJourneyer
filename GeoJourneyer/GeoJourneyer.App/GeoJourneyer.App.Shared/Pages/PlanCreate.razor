@@ -1,0 +1,141 @@
+@page "/plans/create"
+@inject ApiProxyClient ApiClient
+@inject AuthState AuthState
+@inject IJSRuntime JS
+@using Microsoft.JSInterop
+
+<h1>Create Travel Plan</h1>
+@if (!AuthState.IsLoggedIn || countries == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="create-plan">
+        <div class="controls">
+            <input placeholder="Plan title" @bind="planName" />
+            <select @bind="selectedCountryId">
+                <option value="0">Select country</option>
+                @foreach (var c in countries)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+            <input id="searchBox" placeholder="Search places" @oninput="OnSearch" />
+            @if (searchResults != null)
+            {
+                <ul class="results">
+                    @foreach (var r in searchResults)
+                    {
+                        <li @onclick="() => AddPlace(r)">@r.Name</li>
+                    }
+                </ul>
+            }
+            <ol id="selectedList">
+                @foreach (var p in selectedPlaces)
+                {
+                    <li data-id="@p.Id" data-lat="@p.Lat" data-lng="@p.Lng">@p.Name</li>
+                }
+            </ol>
+            <button @onclick="Save">Save</button>
+        </div>
+        <div class="map" id="planMap"></div>
+    </div>
+}
+
+@code {
+    private IEnumerable<CountryDto>? countries;
+    private int selectedCountryId;
+    private string planName = string.Empty;
+    private List<GooglePlace> searchResults = new();
+    private List<GooglePlace> selectedPlaces = new();
+    private DotNetObjectReference<PlanCreate>? objRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        if (first)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("planCreator.init", "planMap", "selectedList", objRef);
+        }
+    }
+
+    private async Task OnSearch(ChangeEventArgs e)
+    {
+        var q = e.Value?.ToString() ?? string.Empty;
+        await JS.InvokeVoidAsync("planCreator.search", q);
+    }
+
+    [JSInvokable]
+    public void ReceiveSearchResults(GooglePlace[] results)
+    {
+        searchResults = results.ToList();
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void UpdateOrder(int[] ids)
+    {
+        selectedPlaces = ids.Select(id => selectedPlaces.First(p => p.Id == id)).ToList();
+        StateHasChanged();
+    }
+
+    private void AddPlace(GooglePlace place)
+    {
+        if (!selectedPlaces.Any(p => p.Id == place.Id))
+        {
+            selectedPlaces.Add(place);
+            JS.InvokeVoidAsync("planCreator.addSelectedMarker", place.Id);
+        }
+    }
+
+    private async Task Save()
+    {
+        var uid = GetUserId();
+        if (uid == null || selectedCountryId == 0 || string.IsNullOrWhiteSpace(planName) || selectedPlaces.Count == 0)
+            return;
+
+        var ids = new List<int>();
+        foreach (var p in selectedPlaces)
+        {
+            var dto = new PlaceDto(0, selectedCountryId, p.Name, p.Lat, p.Lng, null);
+            var id = await ApiClient.PostAsync<PlaceDto, int>("api/places", dto);
+            if (id > 0) ids.Add(id);
+        }
+
+        var planDto = new TravelPlanDto(uid.Value, selectedCountryId, planName, ids);
+        await ApiClient.PostAsync<TravelPlanDto, int>("api/travel-plans", planDto);
+
+        selectedPlaces.Clear();
+        planName = string.Empty;
+    }
+
+    private int? GetUserId()
+    {
+        if (string.IsNullOrEmpty(AuthState.Token)) return null;
+        var parts = AuthState.Token.Split('.');
+        if (parts.Length < 2) return null;
+        try
+        {
+            var json = System.Text.Encoding.UTF8.GetString(Base64UrlDecode(parts[1]));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("sub", out var sub) && int.TryParse(sub.GetString(), out var id))
+                return id;
+        }
+        catch { }
+        return null;
+    }
+
+    private static byte[] Base64UrlDecode(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
+    }
+
+    public record GooglePlace(int Id, string Name, double Lat, double Lng);
+}
