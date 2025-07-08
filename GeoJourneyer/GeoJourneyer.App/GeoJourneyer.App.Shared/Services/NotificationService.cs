@@ -61,7 +61,9 @@ public class NotificationService : IDisposable
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.TryGetProperty("sub", out var sub))
             {
-                return sub.GetInt32();
+                var str = sub.GetString();
+                if (int.TryParse(str, out var id))
+                    return id;
             }
         }
         catch

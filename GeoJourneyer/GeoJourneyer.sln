@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{02EA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{D06148BB-37EA-4B1A-88B3-D95E6D94224B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoJourneyer.Database", "GeoJourneyer.Database\GeoJourneyer.Database.csproj", "{D91560E6-D478-4FFB-B251-0B88226AE8B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81A3F7D3-440C-4184-BB58-F68F6A9671B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D91560E6-D478-4FFB-B251-0B88226AE8B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D91560E6-D478-4FFB-B251-0B88226AE8B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D91560E6-D478-4FFB-B251-0B88226AE8B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D91560E6-D478-4FFB-B251-0B88226AE8B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{044A71FE-25A3-454C-98D8-0F34351A36B0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{62BB3288-78E6-40F2-BCE0-35D129426854} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{81A3F7D3-440C-4184-BB58-F68F6A9671B7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D91560E6-D478-4FFB-B251-0B88226AE8B9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {091C9938-5D77-418A-A718-99C2ED04F825}
