@@ -5,8 +5,10 @@ namespace GeoJourneyer.App.Shared.Services;
 
 public class AuthState
 {
-    private const string StorageKey = "auth-state";
+    private const string SessionStorageKey = "auth-state";
+    private const string LocalStorageKey = "auth-state-local";
     private readonly IJSRuntime _js;
+    private bool _rememberMe;
 
     public AuthState(IJSRuntime js)
     {
@@ -22,8 +24,20 @@ public class AuthState
 
     public async Task InitializeAsync()
     {
-        var json = await _js.InvokeAsync<string>("sessionStorage.getItem", StorageKey);
-        if (string.IsNullOrEmpty(json)) return;
+        var json = await _js.InvokeAsync<string>("sessionStorage.getItem", SessionStorageKey);
+        _rememberMe = false;
+        if (string.IsNullOrEmpty(json))
+        {
+            json = await _js.InvokeAsync<string>("localStorage.getItem", LocalStorageKey);
+            if (!string.IsNullOrEmpty(json))
+            {
+                _rememberMe = true;
+            }
+            else
+            {
+                return;
+            }
+        }
 
         try
         {
@@ -36,20 +50,23 @@ public class AuthState
             }
             else
             {
-                await _js.InvokeVoidAsync("sessionStorage.removeItem", StorageKey);
+                await _js.InvokeVoidAsync("sessionStorage.removeItem", SessionStorageKey);
+                await _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey);
             }
         }
         catch
         {
-            await _js.InvokeVoidAsync("sessionStorage.removeItem", StorageKey);
+            await _js.InvokeVoidAsync("sessionStorage.removeItem", SessionStorageKey);
+            await _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey);
         }
     }
 
-    public async Task SignInAsync(string username, string token)
+    public async Task SignInAsync(string username, string token, bool rememberMe = false)
     {
         Username = username;
         Token = token;
         Expires = DateTimeOffset.UtcNow.AddMinutes(60);
+        _rememberMe = rememberMe;
         await PersistAsync();
         Notify();
     }
@@ -59,7 +76,8 @@ public class AuthState
         Username = null;
         Token = null;
         Expires = null;
-        await _js.InvokeVoidAsync("sessionStorage.removeItem", StorageKey);
+        await _js.InvokeVoidAsync("sessionStorage.removeItem", SessionStorageKey);
+        await _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey);
         Notify();
     }
 
@@ -74,7 +92,12 @@ public class AuthState
     private Task PersistAsync()
     {
         if (Token == null || Username == null || Expires == null)
-            return _js.InvokeVoidAsync("sessionStorage.removeItem", StorageKey).AsTask();
+        {
+            _rememberMe = false;
+            return Task.WhenAll(
+                _js.InvokeVoidAsync("sessionStorage.removeItem", SessionStorageKey).AsTask(),
+                _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey).AsTask());
+        }
 
         var stored = new StoredAuth
         {
@@ -83,7 +106,9 @@ public class AuthState
             Expires = Expires.Value.ToUnixTimeSeconds()
         };
         var json = JsonSerializer.Serialize(stored);
-        return _js.InvokeVoidAsync("sessionStorage.setItem", StorageKey, json).AsTask();
+        if (_rememberMe)
+            return _js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, json).AsTask();
+        return _js.InvokeVoidAsync("sessionStorage.setItem", SessionStorageKey, json).AsTask();
     }
 
     private void Notify() => OnChange?.Invoke();

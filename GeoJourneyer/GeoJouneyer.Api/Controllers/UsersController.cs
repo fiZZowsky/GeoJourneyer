@@ -121,6 +121,18 @@ public class UsersController : ControllerBase
         var req = _friendService.GetBetweenUsers(id, toId);
         if (req == null) return NotFound();
         _friendService.UpdateStatus(req.Id, FriendRequestStatus.Accepted);
-        return NoContent();
+        return Ok();
+    }
+
+    [HttpPost("{id}/reject")]
+    public IActionResult Reject(int id)
+    {
+        var sub = User.FindFirst(JwtRegisteredClaimNames.Sub) ?? User.FindFirst(ClaimTypes.NameIdentifier);
+        if (sub == null) return Unauthorized();
+        var toId = int.Parse(sub.Value);
+        var req = _friendService.GetBetweenUsers(id, toId);
+        if (req == null) return NotFound();
+        _friendService.UpdateStatus(req.Id, FriendRequestStatus.Rejected);
+        return Ok();
     }
 }

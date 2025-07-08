@@ -45,12 +45,15 @@
             background-color: #f5f5f5;
         }
 
-        .notify-list li .actions button {
-            margin-left: 0.25rem;
-            border: none;
-            background: none;
-            cursor: pointer;
+        .notify-list li .actions {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
+
+            .notify-list li .actions button {
+                margin: 0;
+            }
 
         .notify-list li.no-notifications {
             text-align: center;

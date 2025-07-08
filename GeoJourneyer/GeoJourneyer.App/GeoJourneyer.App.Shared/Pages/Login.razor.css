@@ -153,3 +153,9 @@
     color: #b91c1c;
     text-align: center;
 }
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

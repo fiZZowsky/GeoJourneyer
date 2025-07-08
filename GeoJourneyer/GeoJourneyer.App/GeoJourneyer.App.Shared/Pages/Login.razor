@@ -40,6 +40,10 @@
                         <i class="fa-solid @loginPasswordIcon"></i>
                     </button>
                 </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" @bind="rememberMe" />
+                    <label for="remember">Remember me</label>
+                </div>
                 <button type="submit">Sign In</button>
             </form>
         }
@@ -215,6 +219,7 @@
 
 @code {
     private bool isRegister = false;
+    private bool rememberMe = false;
 
     private string? Message;
     private string username = string.Empty;
@@ -305,7 +310,7 @@
         if (response?.Token != null)
         {
             ApiClient.SetToken(response.Token);
-            await AuthState.SignInAsync(username, response.Token);
+            await AuthState.SignInAsync(username, response.Token, rememberMe);
             Message = "Logged in";
             Navigation.NavigateTo("/");
         }
