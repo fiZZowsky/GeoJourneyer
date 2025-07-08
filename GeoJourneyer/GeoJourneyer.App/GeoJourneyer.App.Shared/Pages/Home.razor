@@ -1,10 +1,12 @@
 ﻿@page "/"
+@inject AuthState AuthState
+@inject NavigationManager Navigation
 
 <div class="hero">
     <div class="hero-content">
         <h1>Explore the world</h1>
         <p>Discover new destinations and experiences</p>
-        <a class="cta-btn" href="/login">Get Started</a>
+        <a class="cta-btn" href="#" @onclick="Go" @onclick:preventDefault="true">Get Started</a>
     </div>
 </div>
 
@@ -22,3 +24,11 @@
         <p>Get tips and advice for your next adventure with our comprehensive travel guides.</p>
     </div>
 </section>
+
+@code {
+    private void Go()
+    {
+        var target = AuthState.IsLoggedIn ? "/destinations" : "/login";
+        Navigation.NavigateTo(target);
+    }
+}

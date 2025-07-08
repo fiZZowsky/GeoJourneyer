@@ -46,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         NotificationService.OnChange += StateHasChanged;
-        await NotificationService.LoadAsync();
+        await NotificationService.InitializeAsync();
     }
 
     private async Task Toggle()

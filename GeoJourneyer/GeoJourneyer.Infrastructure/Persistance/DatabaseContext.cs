@@ -19,7 +19,7 @@ public class DatabaseContext
         connection.Open();
         var commands = new[]
         {
-            "CREATE TABLE IF NOT EXISTS Countries (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, IsoCode TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS Countries (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, IsoCode TEXT NOT NULL, Language TEXT)",
             "CREATE TABLE IF NOT EXISTS Places (Id INTEGER PRIMARY KEY AUTOINCREMENT, CountryId INTEGER NOT NULL, Name TEXT NOT NULL, Latitude REAL, Longitude REAL, Description TEXT)",
             "CREATE TABLE IF NOT EXISTS UserCountries (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, Country TEXT NOT NULL, Status INTEGER)",
             "CREATE TABLE IF NOT EXISTS TravelPlans (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, CountryId INTEGER NOT NULL, Name TEXT)",

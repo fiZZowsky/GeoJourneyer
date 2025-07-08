@@ -9,62 +9,112 @@ public class ApiProxyClient
 {
     private readonly HttpClient _httpClient;
     private readonly AuthState _authState;
+    private readonly LoadingService _loading;
     private string? _token;
 
-    public ApiProxyClient(HttpClient httpClient, AuthState authState)
+    public ApiProxyClient(HttpClient httpClient, AuthState authState, LoadingService loading)
     {
         _httpClient = httpClient;
         _authState = authState;
+        _loading = loading;
     }
 
     public async Task<T?> GetAsync<T>(string endpoint)
     {
         await EnsureTokenAsync();
-        return await _httpClient.GetFromJsonAsync<T>(endpoint);
+        _loading.Begin();
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<T>(endpoint);
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest payload)
     {
         await EnsureTokenAsync();
-        var resp = await _httpClient.PostAsJsonAsync(endpoint, payload);
-        if (!resp.IsSuccessStatusCode) return default;
-        return await resp.Content.ReadFromJsonAsync<TResponse>();
+        _loading.Begin();
+        try
+        {
+            var resp = await _httpClient.PostAsJsonAsync(endpoint, payload);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await resp.Content.ReadFromJsonAsync<TResponse>();
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public async Task<TResponse?> PostMultipartAsync<TResponse>(string endpoint, MultipartFormDataContent content)
     {
         await EnsureTokenAsync();
-        var resp = await _httpClient.PostAsync(endpoint, content);
-        if (!resp.IsSuccessStatusCode) return default;
-        return await resp.Content.ReadFromJsonAsync<TResponse>();
+        _loading.Begin();
+        try
+        {
+            var resp = await _httpClient.PostAsync(endpoint, content);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await resp.Content.ReadFromJsonAsync<TResponse>();
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest payload)
     {
         await EnsureTokenAsync();
-        var resp = await _httpClient.PutAsJsonAsync(endpoint, payload);
-        if (!resp.IsSuccessStatusCode) return default;
-        return await resp.Content.ReadFromJsonAsync<TResponse>();
+        _loading.Begin();
+        try
+        {
+            var resp = await _httpClient.PutAsJsonAsync(endpoint, payload);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await resp.Content.ReadFromJsonAsync<TResponse>();
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public async Task<TResponse?> PatchAsync<TRequest, TResponse>(string endpoint, TRequest payload)
     {
         await EnsureTokenAsync();
-        using var request = new HttpRequestMessage(HttpMethod.Patch, endpoint)
+        _loading.Begin();
+        try
         {
-            Content = JsonContent.Create(payload)
-        };
-        var resp = await _httpClient.SendAsync(request);
-        if (!resp.IsSuccessStatusCode) return default;
-        return await resp.Content.ReadFromJsonAsync<TResponse>();
+            using var request = new HttpRequestMessage(HttpMethod.Patch, endpoint)
+            {
+                Content = JsonContent.Create(payload)
+            };
+            var resp = await _httpClient.SendAsync(request);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await resp.Content.ReadFromJsonAsync<TResponse>();
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public async Task<TResponse?> DeleteAsync<TResponse>(string endpoint)
     {
         await EnsureTokenAsync();
-        var resp = await _httpClient.DeleteAsync(endpoint);
-        if (!resp.IsSuccessStatusCode) return default;
-        return await resp.Content.ReadFromJsonAsync<TResponse>();
+        _loading.Begin();
+        try
+        {
+            var resp = await _httpClient.DeleteAsync(endpoint);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await resp.Content.ReadFromJsonAsync<TResponse>();
+        }
+        finally
+        {
+            _loading.End();
+        }
     }
 
     public void SetToken(string? token)
