@@ -14,6 +14,7 @@ public static class ServicesCollectionExtension
         services.AddScoped<ITravelPlanService, TravelPlanService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFriendRequestService, FriendRequestService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddSingleton<ITokenService, TokenService>();
     }
 }
