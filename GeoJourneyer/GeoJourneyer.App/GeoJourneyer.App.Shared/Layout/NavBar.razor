@@ -7,9 +7,12 @@
 
     <ul class="nav-links">
         <li><NavLink href="/destinations" Match="NavLinkMatch.All">Destinations</NavLink></li>
-        <li><NavLink href="/countries">Countries</NavLink></li>
-        <li><NavLink href="/plans">Plans</NavLink></li>
-        <li><NavLink href="/friends">Friends</NavLink></li>
+        @if (AuthState.IsLoggedIn)
+        {
+            <li><NavLink href="/countries">Countries</NavLink></li>
+            <li><NavLink href="/plans">Plans</NavLink></li>
+            <li><NavLink href="/friends">Friends</NavLink></li>
+        }
         <li><NavLink href="/about">About</NavLink></li>
         <li><NavLink href="/contact">Contact</NavLink></li>
     </ul>
