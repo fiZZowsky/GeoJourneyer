@@ -6,7 +6,7 @@ window.initGlobe = function (visited, dotNetHelper) {
         window.globeInstance = Globe()(container)
             .globeImageUrl(null)
             .bumpImageUrl(null);
-        fetch('https://unpkg.com/world-atlas@2.0.2/countries-50m.json')
+        fetch('https://unpkg.com/world-atlas@2.0.2/countries-10m.json')
             .then(res => res.json())
             .then(worldData => {
                 const countries = window.topojson.feature(worldData, worldData.objects.countries).features;
