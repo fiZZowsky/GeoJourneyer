@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net;
+using System.Text.Json;
 
 namespace GeoJourneyer.App.Shared.Services;
 
@@ -25,7 +26,9 @@ public class ApiProxyClient
         _loading.Begin();
         try
         {
-            return await _httpClient.GetFromJsonAsync<T>(endpoint);
+            var resp = await _httpClient.GetAsync(endpoint);
+            if (!resp.IsSuccessStatusCode) return default;
+            return await TryReadFromJsonAsync<T>(resp.Content);
         }
         finally
         {
@@ -41,7 +44,7 @@ public class ApiProxyClient
         {
             var resp = await _httpClient.PostAsJsonAsync(endpoint, payload);
             if (!resp.IsSuccessStatusCode) return default;
-            return await resp.Content.ReadFromJsonAsync<TResponse>();
+            return await TryReadFromJsonAsync<TResponse>(resp.Content);
         }
         finally
         {
@@ -57,7 +60,7 @@ public class ApiProxyClient
         {
             var resp = await _httpClient.PostAsync(endpoint, content);
             if (!resp.IsSuccessStatusCode) return default;
-            return await resp.Content.ReadFromJsonAsync<TResponse>();
+            return await TryReadFromJsonAsync<TResponse>(resp.Content);
         }
         finally
         {
@@ -73,7 +76,7 @@ public class ApiProxyClient
         {
             var resp = await _httpClient.PutAsJsonAsync(endpoint, payload);
             if (!resp.IsSuccessStatusCode) return default;
-            return await resp.Content.ReadFromJsonAsync<TResponse>();
+            return await TryReadFromJsonAsync<TResponse>(resp.Content);
         }
         finally
         {
@@ -93,7 +96,7 @@ public class ApiProxyClient
             };
             var resp = await _httpClient.SendAsync(request);
             if (!resp.IsSuccessStatusCode) return default;
-            return await resp.Content.ReadFromJsonAsync<TResponse>();
+            return await TryReadFromJsonAsync<TResponse>(resp.Content);
         }
         finally
         {
@@ -109,11 +112,33 @@ public class ApiProxyClient
         {
             var resp = await _httpClient.DeleteAsync(endpoint);
             if (!resp.IsSuccessStatusCode) return default;
-            return await resp.Content.ReadFromJsonAsync<TResponse>();
+            return await TryReadFromJsonAsync<TResponse>(resp.Content);
         }
         finally
         {
             _loading.End();
+        }
+    }
+
+    private static async Task<T?> TryReadFromJsonAsync<T>(HttpContent content)
+    {
+        if (content == null)
+            return default;
+
+        if (content.Headers.ContentLength == 0)
+            return default;
+
+        try
+        {
+            return await content.ReadFromJsonAsync<T>();
+        }
+        catch (JsonException)
+        {
+            return default;
+        }
+        catch (NotSupportedException)
+        {
+            return default;
         }
     }
 
@@ -159,7 +184,7 @@ public class ApiProxyClient
 
             if (resp.IsSuccessStatusCode)
             {
-                var tokenDto = await resp.Content.ReadFromJsonAsync<AuthTokenDto>();
+                var tokenDto = await TryReadFromJsonAsync<AuthTokenDto>(resp.Content);
                 if (tokenDto?.Token != null)
                 {
                     await _authState.UpdateTokenAsync(tokenDto.Token);
