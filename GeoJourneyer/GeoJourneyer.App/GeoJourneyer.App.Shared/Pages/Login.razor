@@ -192,8 +192,17 @@
 
                 <div class="input-group">
                     <i class="fa-solid fa-flag icon"></i>
-                    <input @bind="regCountry" @bind:event="oninput" @bind:after="ValidateCountry"
-                           class="@GetInputClass(regCountryErrors)" placeholder="Country of origin" />
+                    <select @bind="regCountry" @bind:event="onchange" @bind:after="ValidateCountry"
+                            class="@GetInputClass(regCountryErrors)">
+                        <option value="">Select country</option>
+                        @if (countries != null)
+                        {
+                            foreach (var c in countries)
+                            {
+                                <option value="@c.IsoCode">@c.Name</option>
+                            }
+                        }
+                    </select>
                 </div>
                 @if (regCountryErrors.Any())
                 {
@@ -236,6 +245,13 @@
     private string regAge = string.Empty;
     private string regCountry = string.Empty;
     private IBrowserFile? regPhoto;
+
+    private IEnumerable<CountryDto>? countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
+    }
 
     private List<string> regUsernameErrors = new();
     private List<string> regEmailErrors = new();
