@@ -36,10 +36,12 @@ public class NotificationService : IDisposable
 
     public async Task MarkAsReadAsync(Notification notification)
     {
-        if (notification.IsRead) return;
         await _apiClient.PostAsync<object, object>($"api/notifications/{notification.Id}/read", new { });
-        notification.IsRead = true;
-        Notify();
+        if (!notification.IsRead)
+        {
+            notification.IsRead = true;
+            Notify();
+        }
     }
 
     public bool HasUnread => _notifications.Any(n => !n.IsRead);
