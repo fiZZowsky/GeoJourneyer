@@ -33,7 +33,10 @@ else
                     {
                         <li>
                             @vc.Country
-                            <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
+                            @if (vc.Status != CountryStatus.Living)
+                            {
+                                <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
+                            }
                         </li>
                     }
                 </ul>
@@ -93,6 +96,8 @@ else
 
     private async Task RemoveCountry(UserCountryDto country)
     {
+        if (country.Status == CountryStatus.Living)
+            return;
         await ApiClient.DeleteAsync<object>($"api/user-countries/{country.Id}");
         visited.Remove(country);
         ComputeToVisit();
