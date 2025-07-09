@@ -2,7 +2,7 @@
 @inject ApiProxyClient ApiClient
 @inject AuthState AuthState
 @inject IJSRuntime JS
-@inject LoadingService LoadingService
+@* @inject LoadingService LoadingService *@
 @using GeoJourneyer.App.Shared.Enums
 @using Microsoft.JSInterop
 
@@ -115,10 +115,10 @@ else
         var visitedNames = visited.Select(v => v.Country).ToArray();
         if (showGlobe && !globeInit)
         {
-            globeInit = true;
-            LoadingService.Begin();
+            // LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
+            globeInit = true;
         }
         else if (showGlobe)
         {
@@ -130,10 +130,10 @@ else
     {
         if (showGlobe && !globeInit)
         {
-            globeInit = true;
-            LoadingService.Begin();
+            // LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray(), objRef);
+            globeInit = true;
         }
     }
 
@@ -162,11 +162,12 @@ else
         return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
     }
 
-    [JSInvokable]
-    public void GlobeLoaded()
-    {
-        LoadingService.End();
-    }
+    // TODO: not working
+    // [JSInvokable]
+    // public void GlobeLoaded()
+    // {
+    //     LoadingService.End();
+    // }
 
     public void Dispose()
     {

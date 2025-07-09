@@ -39,9 +39,10 @@ window.initGlobe = function (visited, dotNetHelper) {
                     });
 
                 window.updateVisitedCountries(visited || []);
-                if (dotNetHelper) {
-                    dotNetHelper.invokeMethodAsync('GlobeLoaded');
-                }
+                // TODO: not wordking
+                //if (dotNetHelper) {
+                //    dotNetHelper.invokeMethodAsync('GlobeLoaded');
+                //}
             })
     } else {
         window.updateVisitedCountries(visited || []);
