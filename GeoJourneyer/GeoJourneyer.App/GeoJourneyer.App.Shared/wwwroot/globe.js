@@ -1,12 +1,6 @@
 window.initGlobe = function (visited, dotNetHelper) {
     const container = document.getElementById('globeContainer');
     if (!container) return;
-    if (typeof Globe === 'undefined' || typeof topojson === 'undefined') {
-        if (dotNetHelper) {
-            dotNetHelper.invokeMethodAsync('GlobeLoaded');
-        }
-        return;
-    }
 
     if (!window.globeInstance) {
         window.globeInstance = Globe()(container)
