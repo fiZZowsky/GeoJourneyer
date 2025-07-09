@@ -8,7 +8,6 @@ public class AuthState
     private const string SessionStorageKey = "auth-state";
     private const string LocalStorageKey = "auth-state-local";
     private readonly IJSRuntime _js;
-    private bool _rememberMe;
 
     public AuthState(IJSRuntime js)
     {
@@ -25,18 +24,10 @@ public class AuthState
     public async Task InitializeAsync()
     {
         var json = await _js.InvokeAsync<string>("sessionStorage.getItem", SessionStorageKey);
-        _rememberMe = false;
         if (string.IsNullOrEmpty(json))
         {
-            json = await _js.InvokeAsync<string>("localStorage.getItem", LocalStorageKey);
-            if (!string.IsNullOrEmpty(json))
-            {
-                _rememberMe = true;
-            }
-            else
-            {
-                return;
-            }
+            await _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey);
+            return;
         }
 
         try
@@ -61,12 +52,11 @@ public class AuthState
         }
     }
 
-    public async Task SignInAsync(string username, string token, bool rememberMe = false)
+    public async Task SignInAsync(string username, string token)
     {
         Username = username;
         Token = token;
-        Expires = DateTimeOffset.UtcNow.AddMinutes(60);
-        _rememberMe = rememberMe;
+        Expires = DateTimeOffset.UtcNow.AddMinutes(30);
         await PersistAsync();
         Notify();
     }
@@ -84,7 +74,7 @@ public class AuthState
     public async Task UpdateTokenAsync(string token)
     {
         Token = token;
-        Expires = DateTimeOffset.UtcNow.AddMinutes(60);
+        Expires = DateTimeOffset.UtcNow.AddMinutes(30);
         await PersistAsync();
         Notify();
     }
@@ -93,7 +83,6 @@ public class AuthState
     {
         if (Token == null || Username == null || Expires == null)
         {
-            _rememberMe = false;
             return Task.WhenAll(
                 _js.InvokeVoidAsync("sessionStorage.removeItem", SessionStorageKey).AsTask(),
                 _js.InvokeVoidAsync("localStorage.removeItem", LocalStorageKey).AsTask());
@@ -106,8 +95,7 @@ public class AuthState
             Expires = Expires.Value.ToUnixTimeSeconds()
         };
         var json = JsonSerializer.Serialize(stored);
-        if (_rememberMe)
-            return _js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, json).AsTask();
+        
         return _js.InvokeVoidAsync("sessionStorage.setItem", SessionStorageKey, json).AsTask();
     }
 

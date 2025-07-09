@@ -3,6 +3,8 @@
 @inject AuthState AuthState
 @inject RegisterValidator RegisterValidator
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
+@using System.Text.Json
 
 <div class="login-container">
     <div class="form-selector">
@@ -310,7 +312,16 @@
         if (response?.Token != null)
         {
             ApiClient.SetToken(response.Token);
-            await AuthState.SignInAsync(username, response.Token, rememberMe);
+            await AuthState.SignInAsync(username, response.Token);
+            if (rememberMe)
+            {
+                var saved = JsonSerializer.Serialize(new SavedLogin { Username = username, Password = password });
+                await JS.InvokeVoidAsync("localStorage.setItem", "saved-login", saved);
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("localStorage.removeItem", "saved-login");
+            }
             Message = "Logged in";
             Navigation.NavigateTo("/");
         }
@@ -392,5 +403,37 @@
     private void OnFileSelected(InputFileChangeEventArgs e)
     {
         regPhoto = e.File;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var json = await JS.InvokeAsync<string>("localStorage.getItem", "saved-login");
+            if (!string.IsNullOrEmpty(json))
+            {
+                try
+                {
+                    var saved = JsonSerializer.Deserialize<SavedLogin>(json);
+                    if (saved != null)
+                    {
+                        username = saved.Username;
+                        password = saved.Password;
+                        rememberMe = true;
+                        StateHasChanged();
+                    }
+                }
+                catch
+                {
+                    await JS.InvokeVoidAsync("localStorage.removeItem", "saved-login");
+                }
+            }
+        }
+    }
+
+    private class SavedLogin
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }
