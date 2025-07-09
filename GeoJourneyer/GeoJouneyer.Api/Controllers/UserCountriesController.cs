@@ -31,7 +31,8 @@ public class UserCountriesController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        _service.DeleteUserCountry(id);
+        var success = _service.DeleteUserCountry(id);
+        if (!success) return Conflict();
         return NoContent();
     }
 }

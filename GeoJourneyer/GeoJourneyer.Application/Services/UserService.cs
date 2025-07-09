@@ -1,10 +1,12 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using GeoJourneyer.Application.DTOs;
+﻿using GeoJourneyer.Application.DTOs;
 using GeoJourneyer.Application.Repositories;
 using GeoJourneyer.Application.Services.Interfaces;
+using GeoJourneyer.Domain;
 using GeoJourneyer.Domain.Entities;
+using GeoJourneyer.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GeoJourneyer.Application.Services;
 
@@ -12,11 +14,13 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
     private readonly ITokenService _tokenService;
+    private readonly IUserCountryRepository _userCountryRepository;
 
-    public UserService(IUserRepository repository, ITokenService tokenService)
+    public UserService(IUserRepository repository, ITokenService tokenService, IUserCountryRepository userCountryRepository)
     {
         _repository = repository;
         _tokenService = tokenService;
+        _userCountryRepository = userCountryRepository;
     }
 
     public string? Register(RegisterUserDto dto)
@@ -39,6 +43,14 @@ public class UserService : IUserService
         };
 
         var id = _repository.Insert(user);
+
+        _userCountryRepository.Insert(new UserCountry
+        {
+            UserId = id,
+            Country = user.CountryOfOrigin,
+            Status = CountryStatus.Living
+        });
+
         return _tokenService.CreateToken(id);
     }
 
