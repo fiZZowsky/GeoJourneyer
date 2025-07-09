@@ -1,4 +1,6 @@
-﻿namespace GeoJourneyer.App.Shared.Services;
+﻿using GeoJourneyer.App.Shared.Enums;
+
+namespace GeoJourneyer.App.Shared.DTOs;
 
 public record UserCountryDto(
     int Id,

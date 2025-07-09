@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net;
 using System.Text.Json;
+using GeoJourneyer.App.Shared.DTOs;
 
 namespace GeoJourneyer.App.Shared.Services;
 

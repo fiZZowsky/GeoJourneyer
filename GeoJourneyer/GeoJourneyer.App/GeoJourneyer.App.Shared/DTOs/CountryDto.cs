@@ -1,4 +1,4 @@
-﻿namespace GeoJourneyer.App.Shared.Services;
+﻿namespace GeoJourneyer.App.Shared.DTOs;
 
 public record CountryDto(
     int Id, 

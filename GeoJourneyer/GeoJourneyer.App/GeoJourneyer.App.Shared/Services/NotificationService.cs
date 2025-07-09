@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GeoJourneyer.App.Shared.Models;
+using System.Text;
 using System.Text.Json;
 namespace GeoJourneyer.App.Shared.Services;
 

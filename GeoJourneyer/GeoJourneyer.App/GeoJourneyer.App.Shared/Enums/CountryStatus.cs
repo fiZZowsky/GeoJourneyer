@@ -1,4 +1,4 @@
-﻿namespace GeoJourneyer.App.Shared.Services;
+﻿namespace GeoJourneyer.App.Shared.Enums;
 
 public enum CountryStatus
 {
