@@ -6,7 +6,7 @@ window.initGlobe = function (visited, dotNetHelper) {
         window.globeInstance = Globe()(container)
             .globeImageUrl(null)
             .bumpImageUrl(null);
-        fetch('data/countries-10m.json')
+        fetch('data/countries-50m.json')
             .then(res => res.json())
             .then(worldData => {
                 const countries = window.topojson.feature(worldData, worldData.objects.countries).features;
