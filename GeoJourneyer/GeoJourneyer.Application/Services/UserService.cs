@@ -65,4 +65,6 @@ public class UserService : IUserService
     }
 
     public IEnumerable<User> SearchByUsername(string text) => _repository.SearchByUsername(text);
+
+    public IEnumerable<User> GetFriends(int userId) => _repository.GetFriends(userId);
 }

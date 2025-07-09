@@ -65,6 +65,14 @@ public class UsersController : ControllerBase
         return Ok(users.Select(u => new PublicUserDTO(u.Id, u.Username)));
     }
 
+    [HttpGet("{id}/friends")]
+    public IActionResult GetFriends(int id)
+    {
+        var friends = _userService.GetFriends(id)
+            .Select(u => new PublicUserDTO(u.Id, u.Username));
+        return Ok(friends);
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetPublicProfile(int id)
     {

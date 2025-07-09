@@ -114,10 +114,10 @@ else
         var visitedNames = visited.Select(v => v.Country).ToArray();
         if (showGlobe && !globeInit)
         {
+            globeInit = true;
             LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
-            globeInit = true;
         }
         else if (showGlobe)
         {
@@ -129,10 +129,10 @@ else
     {
         if (showGlobe && !globeInit)
         {
+            globeInit = true;
             LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray(), objRef);
-            globeInit = true;
         }
     }
 

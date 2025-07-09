@@ -1,7 +1,28 @@
 ﻿@page "/friends"
 @inject ApiProxyClient ApiClient
+@inject AuthState AuthState
 
 <h1>Friends</h1>
+
+@if (friends == null)
+{
+    <p>Loading...</p>
+}
+else if (friends.Any())
+{
+    <ul class="friends-list">
+        @foreach (var f in friends)
+        {
+            <li><a href="/user/@f.Id">@f.Username</a></li>
+        }
+    </ul>
+}
+else
+{
+    <p>No friends yet.</p>
+}
+
+
 <div class="search-container">
     <input placeholder="Search by username" value="@query" @oninput="OnInput" />
     @if (results != null)
@@ -42,7 +63,17 @@
 @code {
     private string query = string.Empty;
     private IEnumerable<PublicUserDto>? results;
+    private List<PublicUserDto>? friends;
     private Dictionary<int, FriendRequestStatus> statuses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var id = GetUserId();
+        if (id != null)
+        {
+            friends = await ApiClient.GetAsync<List<PublicUserDto>>($"api/users/{id}/friends");
+        }
+    }
 
     private async Task OnInput(ChangeEventArgs e)
     {
@@ -74,5 +105,28 @@
         {
             statuses[id] = FriendRequestStatus.Pending;
         }
+    }
+
+    private int? GetUserId()
+    {
+        var token = AuthState.Token;
+        if (string.IsNullOrEmpty(token)) return null;
+        var parts = token.Split('.');
+        if (parts.Length < 2) return null;
+        try
+        {
+            var json = System.Text.Encoding.UTF8.GetString(Base64UrlDecode(parts[1]));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("sub", out var sub) && int.TryParse(sub.GetString(), out var id))
+                return id;
+        }
+        catch { }
+        return null;
+    }
+
+    private static byte[] Base64UrlDecode(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        return System.Convert.FromBase64String(input.PadRight(input.Length + (4 - input.Length % 4) % 4, '='));
     }
 }

@@ -9,4 +9,5 @@ public interface IUserService
     string? Authenticate(LoginUserDto dto);
     User? GetById(int id);
     IEnumerable<User> SearchByUsername(string text);
+    IEnumerable<User> GetFriends(int userId);
 }
