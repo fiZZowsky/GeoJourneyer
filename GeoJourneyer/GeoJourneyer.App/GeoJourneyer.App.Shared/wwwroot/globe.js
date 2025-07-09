@@ -18,7 +18,9 @@ window.initGlobe = function (visited, dotNetHelper) {
                     .polygonStrokeColor(() => '#000')
                     .onPolygonClick(d => {
                         const name = d.properties.name;
-                        if (!window.visitedCountries) window.visitedCountries = [];
+                        if (!Array.isArray(window.visitedCountries)) {
+                            window.visitedCountries = [];
+                        }
                         if (window.visitedCountries.indexOf(name) >= 0) {
                             window.visitedCountries = window.visitedCountries.filter(c => c !== name);
                         } else {
@@ -31,6 +33,9 @@ window.initGlobe = function (visited, dotNetHelper) {
                     });
 
                 window.updateVisitedCountries(visited || []);
+                if (dotNetHelper) {
+                    dotNetHelper.invokeMethodAsync('GlobeLoaded');
+                }
             });
     } else {
         window.updateVisitedCountries(visited || []);
@@ -39,7 +44,7 @@ window.initGlobe = function (visited, dotNetHelper) {
 }
 
 window.updateVisitedCountries = function (visited) {
-    window.visitedCountries = visited || [];
+    window.visitedCountries = Array.isArray(visited) ? visited : [];
     if (!window.globeInstance) return;
 
     const capColor = d => window.visitedCountries.indexOf(d.properties.name) >= 0
