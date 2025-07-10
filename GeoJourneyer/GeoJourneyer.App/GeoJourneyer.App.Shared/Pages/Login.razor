@@ -6,6 +6,8 @@
 @inject IJSRuntime JS
 @using System.Text.Json
 @using GeoJourneyer.App.Shared.DTOs
+@using Microsoft.AspNetCore.Components.Forms
+@using System.IO
 
 <div class="login-container">
     <div class="form-selector">
@@ -18,10 +20,9 @@
     </div>
 
     <div class="form-wrapper">
-
-        @* ===== LOGIN ===== *@
         @if (!isRegister)
         {
+            <!-- ===== LOGIN ===== -->
             <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
                     <i class="fa-solid fa-envelope icon"></i>
@@ -55,23 +56,32 @@
         }
         else
         {
-            @* ===== REGISTER ===== *@
+            <!-- ===== REGISTER ===== -->
             <div class="register-container">
-                <div class="decor-left">
-                    <img src="~/images/passport.png" alt="passport" class="passport" />
-                </div>
-
                 <div class="register-card">
-                    <div class="photo-holder">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="file" @onchange="OnFileSelected" />
-                        <span class="plus">+</span>
-                    </div>
-
                     <h2>User Registration</h2>
 
                     <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
-                        <div class="input-group">
+                        <!-- 1. Ukryty input-file -->
+                        <InputFile id="photoInput"
+                                   style="display:none"
+                                   accept="image/*"
+                                   OnChange="OnFileSelected" />
+
+                        <label for="photoInput" class="photo-label" title="Upload Photo">
+                            @if (!string.IsNullOrEmpty(photoPreview))
+                            {
+                                <img src="@photoPreview" class="photo-preview" />
+                            }
+                            else
+                            {
+                                <i class="fa-regular fa-user"></i>
+                            }
+                            <span>Upload Photo</span>
+                        </label>
+
+                        <!-- USERNAME -->
+                        <div class="input-group username">
                             <i class="fa-solid fa-user icon"></i>
                             <input @bind="regUsername"
                                    @bind:event="oninput"
@@ -89,7 +99,8 @@
                             </ul>
                         }
 
-                        <div class="input-group">
+                        <!-- EMAIL -->
+                        <div class="input-group email">
                             <i class="fa-solid fa-envelope icon"></i>
                             <input type="email"
                                    @bind="regEmail"
@@ -108,7 +119,8 @@
                             </ul>
                         }
 
-                        <div class="input-group password-group">
+                        <!-- PASSWORD -->
+                        <div class="input-group password">
                             <i class="fa-solid fa-lock icon"></i>
                             <input type="@regPasswordType"
                                    @bind="regPassword"
@@ -136,7 +148,8 @@
                             </ul>
                         }
 
-                        <div class="input-group password-group">
+                        <!-- CONFIRM PASSWORD -->
+                        <div class="input-group confirm">
                             <i class="fa-solid fa-lock icon"></i>
                             <input type="@regConfirmPasswordType"
                                    @bind="regPasswordConfirm"
@@ -164,23 +177,22 @@
                             </ul>
                         }
 
-                        <div class="name-row">
-                            <div class="input-group">
-                                <i class="fa-solid fa-user icon"></i>
-                                <input @bind="regFirstName"
-                                       @bind:event="oninput"
-                                       @bind:after="ValidateFirstName"
-                                       class="@GetInputClass(regFirstNameErrors)"
-                                       placeholder="First Name" />
-                            </div>
-                            <div class="input-group">
-                                <i class="fa-solid fa-user icon"></i>
-                                <input @bind="regLastName"
-                                       @bind:event="oninput"
-                                       @bind:after="ValidateLastName"
-                                       class="@GetInputClass(regLastNameErrors)"
-                                       placeholder="Last Name" />
-                            </div>
+                        <!-- FIRST & LAST NAME -->
+                        <div class="input-group firstname">
+                            <i class="fa-solid fa-user icon"></i>
+                            <input @bind="regFirstName"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateFirstName"
+                                   class="@GetInputClass(regFirstNameErrors)"
+                                   placeholder="First Name" />
+                        </div>
+                        <div class="input-group lastname">
+                            <i class="fa-solid fa-user icon"></i>
+                            <input @bind="regLastName"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateLastName"
+                                   class="@GetInputClass(regLastNameErrors)"
+                                   placeholder="Last Name" />
                         </div>
                         @if (regFirstNameErrors.Any())
                         {
@@ -201,7 +213,8 @@
                             </ul>
                         }
 
-                        <div class="input-group">
+                        <!-- AGE & COUNTRY -->
+                        <div class="input-group age">
                             <i class="fa-solid fa-cake-candles icon"></i>
                             <select @bind="regAge"
                                     @bind:event="onchange"
@@ -224,7 +237,7 @@
                             </ul>
                         }
 
-                        <div class="input-group">
+                        <div class="input-group country">
                             <i class="fa-solid fa-flag icon"></i>
                             <select @bind="regCountry"
                                     @bind:event="onchange"
@@ -247,7 +260,7 @@
                             </ul>
                         }
 
-                        <button type="submit">Sign Up</button>
+                        <button type="submit" class="submit">Sign Up</button>
                     </form>
                 </div>
             </div>
@@ -265,46 +278,32 @@
     private bool rememberMe = false;
 
     private string? Message;
-    private string username = string.Empty;
-    private string password = string.Empty;
-    private string regUsername = string.Empty;
-    private string regEmail = string.Empty;
-    private string regPassword = string.Empty;
-    private string regPasswordConfirm = string.Empty;
-    private string regFirstName = string.Empty;
-    private string regLastName = string.Empty;
-    private string regAge = string.Empty;
-    private string regCountry = string.Empty;
+    private string username = "", password = "";
+    private string regUsername = "", regEmail = "";
+    private string regPassword = "", regPasswordConfirm = "";
+    private string regFirstName = "", regLastName = "";
+    private string regAge = "", regCountry = "";
     private IBrowserFile? regPhoto;
-
+    private string? photoPreview;
     private IEnumerable<CountryDto>? countries;
 
-    protected override async Task OnInitializedAsync()
-    {
-        countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
-    }
+    protected override async Task OnInitializedAsync() =>
+      countries = await ApiClient.GetAsync<IEnumerable<CountryDto>>("api/countries");
 
-    private List<string> regUsernameErrors = new();
-    private List<string> regEmailErrors = new();
-    private List<string> regPasswordErrors = new();
-    private List<string> regConfirmErrors = new();
-    private List<string> regFirstNameErrors = new();
-    private List<string> regLastNameErrors = new();
-    private List<string> regAgeErrors = new();
-    private List<string> regCountryErrors = new();
+    private List<string> regUsernameErrors = new(), regEmailErrors = new(),
+                         regPasswordErrors = new(), regConfirmErrors = new(),
+                         regFirstNameErrors = new(), regLastNameErrors = new(),
+                         regAgeErrors = new(), regCountryErrors = new();
 
-    private string loginPasswordType = "password";
-    private string regPasswordType = "password";
-    private string regConfirmPasswordType = "password";
+    private string loginPasswordType = "password",
+                   regPasswordType = "password",
+                   regConfirmPasswordType = "password";
+    private string loginPasswordIcon = "fa-eye",
+                   regPasswordIcon = "fa-eye",
+                   regConfirmPasswordIcon = "fa-eye";
 
-    private string loginPasswordIcon = "fa-eye";
-    private string regPasswordIcon = "fa-eye";
-    private string regConfirmPasswordIcon = "fa-eye";
-
-    private void ValidateRegUsername() =>
-      regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
-    private void ValidateRegEmail() =>
-      regEmailErrors = RegisterValidator.ValidateEmail(regEmail);
+    private void ValidateRegUsername() => regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
+    private void ValidateRegEmail() => regEmailErrors = RegisterValidator.ValidateEmail(regEmail);
     private void ValidateRegPassword()
     {
         regPasswordErrors = RegisterValidator.ValidatePassword(regPassword);
@@ -312,14 +311,10 @@
     }
     private void ValidateConfirmPassword() =>
       regConfirmErrors = RegisterValidator.ValidateConfirmPassword(regPassword, regPasswordConfirm);
-    private void ValidateFirstName() =>
-      regFirstNameErrors = RegisterValidator.ValidateFirstName(regFirstName);
-    private void ValidateLastName() =>
-      regLastNameErrors = RegisterValidator.ValidateLastName(regLastName);
-    private void ValidateAge() =>
-      regAgeErrors = RegisterValidator.ValidateAge(regAge);
-    private void ValidateCountry() =>
-      regCountryErrors = RegisterValidator.ValidateCountry(regCountry);
+    private void ValidateFirstName() => regFirstNameErrors = RegisterValidator.ValidateFirstName(regFirstName);
+    private void ValidateLastName() => regLastNameErrors = RegisterValidator.ValidateLastName(regLastName);
+    private void ValidateAge() => regAgeErrors = RegisterValidator.ValidateAge(regAge);
+    private void ValidateCountry() => regCountryErrors = RegisterValidator.ValidateCountry(regCountry);
 
     private bool ValidateForm()
     {
@@ -437,9 +432,16 @@
         regConfirmPasswordIcon = "fa-eye";
     }
 
-    private void OnFileSelected(InputFileChangeEventArgs e)
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        regPhoto = e.File;
+        var file = e.File;
+        if (file != null)
+        {
+            regPhoto = file;
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream(10 * 1024 * 1024).ReadAsync(buffer);
+            photoPreview = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

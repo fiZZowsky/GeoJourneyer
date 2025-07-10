@@ -1,18 +1,18 @@
-﻿.login-container {
+﻿/* --- GLOBAL --- */
+.login-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #f0f4f8;
+    background: #f0f4f8;
     padding: 1rem;
-    box-sizing: border-box;
 }
 
 .form-selector {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: .5rem;
     margin-bottom: 1.5rem;
 }
 
@@ -36,7 +36,7 @@
 .slider {
     position: absolute;
     inset: 0;
-    background-color: #b6b6b6;
+    background: #b6b6b6;
     border-radius: 1em;
     transition: .4s;
 }
@@ -46,15 +46,15 @@
         position: absolute;
         width: 1.4em;
         height: 1.4em;
-        background-color: #fff;
-        border-radius: 50%;
         left: .3em;
         bottom: .3em;
+        background: #fff;
+        border-radius: 50%;
         transition: .4s;
     }
 
 .switch input:checked + .slider {
-    background-color: #21cc4c;
+    background: #21cc4c;
 }
 
     .switch input:checked + .slider:before {
@@ -63,9 +63,10 @@
 
 .form-wrapper {
     width: 100%;
-    max-width: 360px;
+    max-width: 480px;
 }
 
+/* --- LOGIN --- */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -86,17 +87,16 @@
 
     .input-group input {
         width: 100%;
-        padding: .75rem 2.5rem .75rem 2.5rem;
+        padding: .75rem 2.5rem;
         border: 1px solid #ddd;
         border-radius: .5rem;
-        font-size: 1rem;
-        background-color: #fff;
+        background: #fff;
         box-sizing: border-box;
     }
 
 .password-group input {
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
+    background: #f5f5f5;
+    border-color: #ccc;
 }
 
 .reveal-btn {
@@ -104,7 +104,7 @@
     top: 50%;
     right: .75rem;
     transform: translateY(-50%);
-    background: transparent;
+    background: none;
     border: none;
     cursor: pointer;
     padding: 0;
@@ -122,9 +122,8 @@
     margin-bottom: 1rem;
 }
 
-.auth-form button[type="submit"] {
+.auth-form > button {
     padding: .75rem;
-    font-size: 1rem;
     border: none;
     border-radius: .5rem;
     background: linear-gradient(90deg,#3b82f6,#2563eb);
@@ -133,8 +132,8 @@
     transition: opacity .2s;
 }
 
-    .auth-form button[type="submit"]:hover {
-        opacity: 0.9;
+    .auth-form > button:hover {
+        opacity: .9;
     }
 
 .message {
@@ -144,114 +143,146 @@
     text-align: center;
 }
 
+/* --- REGISTER CARD --- */
 .register-container {
-    position: relative;
     width: 100%;
     max-width: 480px;
     margin: 0 auto;
-    background-color: #fffef8;
+}
+
+.register-card {
+    background: #fffef8;
     border-radius: 1rem;
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem 2.5rem;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    overflow: visible;
 }
 
-.decor-left .suitcase {
-    position: absolute;
-    top: -40px;
-    left: -60px;
+    /* GRID: 2 kolumny równe */
+    .register-card .auth-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "username photo"
+            "email    photo"
+            "password confirm"
+            "firstname lastname"
+            "age      country"
+            "submit   submit";
+        gap: 1rem;
+    }
+
+.input-group.username {
+    grid-area: username;
+}
+
+.input-group.email {
+    grid-area: email;
+}
+
+.input-group.password {
+    grid-area: password;
+}
+
+.input-group.confirm {
+    grid-area: confirm;
+}
+
+.input-group.firstname {
+    grid-area: firstname;
+}
+
+.input-group.lastname {
+    grid-area: lastname;
+}
+
+.input-group.age {
+    grid-area: age;
+}
+
+.input-group.country {
+    grid-area: country;
+}
+
+.photo-label {
+    grid-area: photo;
+    justify-self: center;
+}
+
+.submit {
+    grid-area: submit;
+}
+
+/* PHOTO-UPLOAD BOX */
+.photo-label {
     width: 120px;
-    opacity: .8;
-}
-
-.decor-left .passport {
-    position: absolute;
-    top: -20px;
-    left: 100px;
-    width: 80px;
-    transform: rotate(-10deg);
-    opacity: .9;
-}
-
-.photo-holder {
-    width: 90px;
-    height: 90px;
-    background-color: #fffef8;
-    border-radius: .75rem;
-    margin: -45px auto 1rem;
+    height: 120px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: .5rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
 }
 
-    .photo-holder input[type="file"] {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
+    .photo-label i {
+        font-size: 2.5rem;
+        color: #888;
     }
 
-    .photo-holder .fa-user {
-        font-size: 2rem;
-        color: #ccc;
+    .photo-label span {
+        margin-top: .5rem;
+        font-size: .85rem;
+        color: #444;
     }
 
-    .photo-holder .plus {
-        position: absolute;
-        bottom: 4px;
-        right: 4px;
-        width: 24px;
-        height: 24px;
-        background: #3b82f6;
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-    }
-
-.register-card h2 {
-    margin: 0 0 1.5rem;
-    font-size: 1.75rem;
-    text-align: center;
-    color: #264653;
+.photo-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: .5rem;
 }
 
-.name-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.auth-form .input-group input,
-.auth-form .input-group select {
+/* input/select w rejestracji */
+.register-card .input-group input,
+.register-card .input-group select {
     width: 100%;
     padding: .75rem 1rem .75rem 2.5rem;
     font-size: 1rem;
     border: 1px solid #ddd;
     border-radius: .5rem;
-    background-color: #fff;
-    appearance: none;
+    background: #fff;
+    box-sizing: border-box;
 }
 
-.auth-form button[type="submit"] {
-    margin-top: 1rem;
-    padding: .75rem;
+/* SIGN UP button */
+.submit {
     width: 100%;
+    padding: .75rem;
     border: none;
     border-radius: .75rem;
-    font-size: 1rem;
-    color: #fff;
     background: linear-gradient(90deg,#3b82f6,#2563eb);
+    color: #fff;
+    font-size: 1rem;
     cursor: pointer;
     transition: opacity .2s;
 }
 
-    .auth-form button[type="submit"]:hover {
-        opacity: 0.9;
+    .submit:hover {
+        opacity: .9;
     }
+
+/* RESPONSYWNOŚĆ */
+@media (max-width:600px) {
+    .register-card .auth-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .photo-label {
+        margin: 0 auto 1rem;
+        justify-self: auto;
+    }
+}
