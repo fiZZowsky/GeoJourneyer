@@ -18,15 +18,16 @@
     </div>
 
     <div class="form-wrapper">
+
+        @* ===== LOGIN ===== *@
         @if (!isRegister)
         {
             <form class="auth-form" @onsubmit="OnLoginAsync" @onsubmit:preventDefault>
                 <div class="input-group">
                     <i class="fa-solid fa-envelope icon"></i>
-                    <input @bind="username"
-                           @bind:event="oninput"
-                           placeholder="name@mail.com" required />
+                    <input @bind="username" @bind:event="oninput" placeholder="name@mail.com" required />
                 </div>
+
                 <div class="input-group password-group">
                     <i class="fa-solid fa-lock icon"></i>
                     <input type="@loginPasswordType"
@@ -43,183 +44,213 @@
                         <i class="fa-solid @loginPasswordIcon"></i>
                     </button>
                 </div>
+
                 <div class="remember-me">
                     <input type="checkbox" id="remember" @bind="rememberMe" />
                     <label for="remember">Remember me</label>
                 </div>
+
                 <button type="submit">Sign In</button>
             </form>
         }
         else
         {
-            <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
-                <div class="input-group">
-                    <i class="fa-solid fa-user icon"></i>
-                    <input @bind="regUsername"
-                           @bind:event="oninput"
-                           @bind:after="ValidateRegUsername"
-                           class="@GetInputClass(regUsernameErrors)"
-                           placeholder="Username" />
-                </div>
-                @if (regUsernameErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regUsernameErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group">
-                    <i class="fa-solid fa-envelope icon"></i>
-                    <input type="email"
-                           @bind="regEmail"
-                           @bind:event="oninput"
-                           @bind:after="ValidateRegEmail"
-                           class="@GetInputClass(regEmailErrors)"
-                           placeholder="Email" />
-                </div>
-                @if (regEmailErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regEmailErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group password-group">
-                    <i class="fa-solid fa-lock icon"></i>
-                    <input type="@regPasswordType"
-                           @bind="regPassword"
-                           @bind:event="oninput"
-                           @bind:after="ValidateRegPassword"
-                           class="@GetInputClass(regPasswordErrors)"
-                           placeholder="Password"
-                           @oncopy:preventDefault />
-                    <button type="button" class="reveal-btn"
-                            @onmousedown="ShowRegPassword"
-                            @onmouseup="HideRegPassword"
-                            @onmouseleave="HideRegPassword"
-                            @ontouchstart="ShowRegPassword"
-                            @ontouchend="HideRegPassword">
-                        <i class="fa-solid @regPasswordIcon"></i>
-                    </button>
-                </div>
-                @if (regPasswordErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regPasswordErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group password-group">
-                    <i class="fa-solid fa-lock icon"></i>
-                    <input type="@regConfirmPasswordType"
-                           @bind="regPasswordConfirm"
-                           @bind:event="oninput"
-                           @bind:after="ValidateConfirmPassword"
-                           class="@GetInputClass(regConfirmErrors)"
-                           placeholder="Confirm Password"
-                           @oncopy:preventDefault />
-                    <button type="button" class="reveal-btn"
-                            @onmousedown="ShowRegConfirmPassword"
-                            @onmouseup="HideRegConfirmPassword"
-                            @onmouseleave="HideRegConfirmPassword"
-                            @ontouchstart="ShowRegConfirmPassword"
-                            @ontouchend="HideRegConfirmPassword">
-                        <i class="fa-solid @regConfirmPasswordIcon"></i>
-                    </button>
-                </div>
-                @if (regConfirmErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regConfirmErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-                <div class="input-group">
-                    <i class="fa-solid fa-user icon"></i>
-                    <input @bind="regFirstName" @bind:event="oninput" @bind:after="ValidateFirstName"
-                           class="@GetInputClass(regFirstNameErrors)" placeholder="First name" />
-                </div>
-                @if (regFirstNameErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regFirstNameErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group">
-                    <i class="fa-solid fa-user icon"></i>
-                    <input @bind="regLastName" @bind:event="oninput" @bind:after="ValidateLastName"
-                           class="@GetInputClass(regLastNameErrors)" placeholder="Last name" />
-                </div>
-                @if (regLastNameErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regLastNameErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group">
-                    <i class="fa-solid fa-cake-candles icon"></i>
-                    <input type="number" @bind="regAge" @bind:event="oninput" @bind:after="ValidateAge"
-                           class="@GetInputClass(regAgeErrors)" placeholder="Age" />
-                </div>
-                @if (regAgeErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regAgeErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group">
-                    <i class="fa-solid fa-flag icon"></i>
-                    <select @bind="regCountry" @bind:event="onchange" @bind:after="ValidateCountry"
-                            class="@GetInputClass(regCountryErrors)">
-                        <option value="">Select country</option>
-                        @if (countries != null)
-                        {
-                            foreach (var c in countries)
-                            {
-                                <option value="@c.IsoCode">@c.Name</option>
-                            }
-                        }
-                    </select>
-                </div>
-                @if (regCountryErrors.Any())
-                {
-                    <ul class="validation-message">
-                        @foreach (var e in regCountryErrors)
-                        {
-                            <li>@e</li>
-                        }
-                    </ul>
-                }
-
-                <div class="input-group">
-                    <InputFile OnChange="OnFileSelected" />
+            @* ===== REGISTER ===== *@
+            <div class="register-container">
+                <div class="decor-left">
+                    <img src="~/images/passport.png" alt="passport" class="passport" />
                 </div>
 
-                <button type="submit">Sign Up</button>
-            </form>
+                <div class="register-card">
+                    <div class="photo-holder">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="file" @* @onchange="OnFileSelected" *@ />
+                        <span class="plus">+</span>
+                    </div>
+
+                    <h2>User Registration</h2>
+
+                    <form class="auth-form" @onsubmit="OnRegisterAsync" @onsubmit:preventDefault>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user icon"></i>
+                            <input @bind="regUsername"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateRegUsername"
+                                   class="@GetInputClass(regUsernameErrors)"
+                                   placeholder="Username" />
+                        </div>
+                        @if (regUsernameErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regUsernameErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="input-group">
+                            <i class="fa-solid fa-envelope icon"></i>
+                            <input type="email"
+                                   @bind="regEmail"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateRegEmail"
+                                   class="@GetInputClass(regEmailErrors)"
+                                   placeholder="Email" />
+                        </div>
+                        @if (regEmailErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regEmailErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="input-group password-group">
+                            <i class="fa-solid fa-lock icon"></i>
+                            <input type="@regPasswordType"
+                                   @bind="regPassword"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateRegPassword"
+                                   class="@GetInputClass(regPasswordErrors)"
+                                   placeholder="Password"
+                                   @oncopy:preventDefault />
+                            <button type="button" class="reveal-btn"
+                                    @onmousedown="ShowRegPassword"
+                                    @onmouseup="HideRegPassword"
+                                    @onmouseleave="HideRegPassword"
+                                    @ontouchstart="ShowRegPassword"
+                                    @ontouchend="HideRegPassword">
+                                <i class="fa-solid @regPasswordIcon"></i>
+                            </button>
+                        </div>
+                        @if (regPasswordErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regPasswordErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="input-group password-group">
+                            <i class="fa-solid fa-lock icon"></i>
+                            <input type="@regConfirmPasswordType"
+                                   @bind="regPasswordConfirm"
+                                   @bind:event="oninput"
+                                   @bind:after="ValidateConfirmPassword"
+                                   class="@GetInputClass(regConfirmErrors)"
+                                   placeholder="Confirm Password"
+                                   @oncopy:preventDefault />
+                            <button type="button" class="reveal-btn"
+                                    @onmousedown="ShowRegConfirmPassword"
+                                    @onmouseup="HideRegConfirmPassword"
+                                    @onmouseleave="HideRegConfirmPassword"
+                                    @ontouchstart="ShowRegConfirmPassword"
+                                    @ontouchend="HideRegConfirmPassword">
+                                <i class="fa-solid @regConfirmPasswordIcon"></i>
+                            </button>
+                        </div>
+                        @if (regConfirmErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regConfirmErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="name-row">
+                            <div class="input-group">
+                                <i class="fa-solid fa-user icon"></i>
+                                <input @bind="regFirstName"
+                                       @bind:event="oninput"
+                                       @bind:after="ValidateFirstName"
+                                       class="@GetInputClass(regFirstNameErrors)"
+                                       placeholder="First Name" />
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-user icon"></i>
+                                <input @bind="regLastName"
+                                       @bind:event="oninput"
+                                       @bind:after="ValidateLastName"
+                                       class="@GetInputClass(regLastNameErrors)"
+                                       placeholder="Last Name" />
+                            </div>
+                        </div>
+                        @if (regFirstNameErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regFirstNameErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+                        @if (regLastNameErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regLastNameErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="input-group">
+                            <i class="fa-solid fa-cake-candles icon"></i>
+                            <select @bind="regAge"
+                                    @bind:event="onchange"
+                                    @bind:after="ValidateAge"
+                                    class="@GetInputClass(regAgeErrors)">
+                                <option value="">Age</option>
+                                @for (int i = 18; i <= 100; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+                        @if (regAgeErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regAgeErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <div class="input-group">
+                            <i class="fa-solid fa-flag icon"></i>
+                            <select @bind="regCountry"
+                                    @bind:event="onchange"
+                                    @bind:after="ValidateCountry"
+                                    class="@GetInputClass(regCountryErrors)">
+                                <option value="">Country of Origin</option>
+                                @foreach (var c in countries!)
+                                {
+                                    <option value="@c.IsoCode">@c.Name</option>
+                                }
+                            </select>
+                        </div>
+                        @if (regCountryErrors.Any())
+                        {
+                            <ul class="validation-message">
+                                @foreach (var e in regCountryErrors)
+                                {
+                                    <li>@e</li>
+                                }
+                            </ul>
+                        }
+
+                        <button type="submit">Sign Up</button>
+                    </form>
+                </div>
+            </div>
         }
 
         @if (!string.IsNullOrEmpty(Message))
@@ -271,31 +302,24 @@
     private string regConfirmPasswordIcon = "fa-eye";
 
     private void ValidateRegUsername() =>
-        regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
-
+      regUsernameErrors = RegisterValidator.ValidateUsername(regUsername);
     private void ValidateRegEmail() =>
-        regEmailErrors = RegisterValidator.ValidateEmail(regEmail);
-
+      regEmailErrors = RegisterValidator.ValidateEmail(regEmail);
     private void ValidateRegPassword()
     {
         regPasswordErrors = RegisterValidator.ValidatePassword(regPassword);
         ValidateConfirmPassword();
     }
-
     private void ValidateConfirmPassword() =>
-        regConfirmErrors = RegisterValidator.ValidateConfirmPassword(regPassword, regPasswordConfirm);
-
+      regConfirmErrors = RegisterValidator.ValidateConfirmPassword(regPassword, regPasswordConfirm);
     private void ValidateFirstName() =>
-   regFirstNameErrors = RegisterValidator.ValidateFirstName(regFirstName);
-
+      regFirstNameErrors = RegisterValidator.ValidateFirstName(regFirstName);
     private void ValidateLastName() =>
-        regLastNameErrors = RegisterValidator.ValidateLastName(regLastName);
-
+      regLastNameErrors = RegisterValidator.ValidateLastName(regLastName);
     private void ValidateAge() =>
-        regAgeErrors = RegisterValidator.ValidateAge(regAge);
-
+      regAgeErrors = RegisterValidator.ValidateAge(regAge);
     private void ValidateCountry() =>
-        regCountryErrors = RegisterValidator.ValidateCountry(regCountry);
+      regCountryErrors = RegisterValidator.ValidateCountry(regCountry);
 
     private bool ValidateForm()
     {
@@ -308,23 +332,23 @@
         ValidateAge();
         ValidateCountry();
         return !(regUsernameErrors.Any()
-              || regEmailErrors.Any()
-              || regPasswordErrors.Any()
-              || regConfirmErrors.Any()
-              || regFirstNameErrors.Any()
-              || regLastNameErrors.Any()
-              || regAgeErrors.Any()
-              || regCountryErrors.Any());
+               || regEmailErrors.Any()
+               || regPasswordErrors.Any()
+               || regConfirmErrors.Any()
+               || regFirstNameErrors.Any()
+               || regLastNameErrors.Any()
+               || regAgeErrors.Any()
+               || regCountryErrors.Any());
     }
 
     private static string GetInputClass(List<string> errors) =>
-        errors.Any() ? "invalid" : string.Empty;
+      errors.Any() ? "invalid" : string.Empty;
 
     private async Task OnLoginAsync()
     {
         var response = await ApiClient.PostAsync<object, AuthTokenDto>(
-            "api/auth/login",
-            new { Email = username, Password = password });
+          "api/auth/login",
+          new { Email = username, Password = password });
 
         if (response?.Token != null)
         {
@@ -387,36 +411,32 @@
         loginPasswordType = "text";
         loginPasswordIcon = "fa-eye-slash";
     }
-
     private void HideLoginPassword()
     {
         loginPasswordType = "password";
         loginPasswordIcon = "fa-eye";
     }
-
     private void ShowRegPassword()
     {
         regPasswordType = "text";
         regPasswordIcon = "fa-eye-slash";
     }
-
     private void HideRegPassword()
     {
         regPasswordType = "password";
         regPasswordIcon = "fa-eye";
     }
-
     private void ShowRegConfirmPassword()
     {
         regConfirmPasswordType = "text";
         regConfirmPasswordIcon = "fa-eye-slash";
     }
-
     private void HideRegConfirmPassword()
     {
         regConfirmPasswordType = "password";
         regConfirmPasswordIcon = "fa-eye";
     }
+
     private void OnFileSelected(InputFileChangeEventArgs e)
     {
         regPhoto = e.File;

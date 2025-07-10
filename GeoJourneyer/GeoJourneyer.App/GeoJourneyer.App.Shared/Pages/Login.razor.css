@@ -1,10 +1,10 @@
 ﻿.login-container {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: #f0f4f8;
     padding: 1rem;
     box-sizing: border-box;
 }
@@ -23,7 +23,6 @@
 
 .switch {
     position: relative;
-    display: inline-block;
     width: 3.5em;
     height: 2em;
 }
@@ -36,22 +35,21 @@
 
 .slider {
     position: absolute;
-    cursor: pointer;
     inset: 0;
     background-color: #b6b6b6;
-    transition: .4s;
     border-radius: 1em;
+    transition: .4s;
 }
 
     .slider:before {
         content: "";
         position: absolute;
-        height: 1.4em;
         width: 1.4em;
-        border-radius: 50%;
-        left: 0.3em;
-        bottom: 0.3em;
+        height: 1.4em;
         background-color: #fff;
+        border-radius: 50%;
+        left: .3em;
+        bottom: .3em;
         transition: .4s;
     }
 
@@ -65,82 +63,74 @@
 
 .form-wrapper {
     width: 100%;
-    max-width: 320px;
+    max-width: 360px;
 }
 
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
 }
 
 .input-group {
     position: relative;
+    margin-bottom: 1rem;
 }
 
     .input-group .icon {
         position: absolute;
         top: 50%;
-        left: 0.75rem;
+        left: .75rem;
         transform: translateY(-50%);
-        font-size: 1.1rem;
         color: #888;
     }
 
     .input-group input {
         width: 100%;
-        padding: 0.75rem 2.5rem 0.75rem 2.5rem;
-        font-size: 1rem;
+        padding: .75rem 2.5rem .75rem 2.5rem;
         border: 1px solid #ddd;
-        border-radius: 0.5rem;
-        outline: none;
+        border-radius: .5rem;
+        font-size: 1rem;
+        background-color: #fff;
         box-sizing: border-box;
     }
 
-    .input-group.password-group {
+.password-group input {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+}
+
+.reveal-btn {
+    position: absolute;
+    top: 50%;
+    right: .75rem;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+    .reveal-btn i {
+        font-size: 1.25rem;
+        color: #666;
     }
 
-        .input-group.password-group .icon {
-            display: block;
-        }
-
-        .input-group.password-group input {
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            border-radius: 0.375rem;
-            padding: 0.75rem 2.5rem 0.75rem 2.5rem;
-        }
-
-        .input-group.password-group .reveal-btn {
-            position: absolute;
-            top: 50%;
-            right: 0.75rem;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-            .input-group.password-group .reveal-btn i {
-                width: 1.25rem;
-                height: 1.25rem;
-                fill: #666;
-            }
-
-            .input-group.password-group .reveal-btn:active i {
-                fill: #333;
-            }
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 1rem;
+}
 
 .auth-form button[type="submit"] {
-    padding: 0.75rem;
+    padding: .75rem;
     font-size: 1rem;
     border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    border-radius: .5rem;
+    background: linear-gradient(90deg,#3b82f6,#2563eb);
     color: #fff;
-    width: 100%;
+    cursor: pointer;
+    transition: opacity .2s;
 }
 
     .auth-form button[type="submit"]:hover {
@@ -149,13 +139,119 @@
 
 .message {
     margin-top: 1rem;
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: #b91c1c;
     text-align: center;
 }
 
-.remember-me {
+.register-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: #fffef8;
+    border-radius: 1rem;
+    padding: 2.5rem 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: visible;
+}
+
+.decor-left .suitcase {
+    position: absolute;
+    top: -40px;
+    left: -60px;
+    width: 120px;
+    opacity: .8;
+}
+
+.decor-left .passport {
+    position: absolute;
+    top: -20px;
+    left: 100px;
+    width: 80px;
+    transform: rotate(-10deg);
+    opacity: .9;
+}
+
+.photo-holder {
+    width: 90px;
+    height: 90px;
+    background-color: #fffef8;
+    border-radius: .75rem;
+    margin: -45px auto 1rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
+
+    .photo-holder input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .photo-holder .fa-user {
+        font-size: 2rem;
+        color: #ccc;
+    }
+
+    .photo-holder .plus {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 24px;
+        height: 24px;
+        background: #3b82f6;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+.register-card h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.75rem;
+    text-align: center;
+    color: #264653;
+}
+
+.name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.auth-form .input-group input,
+.auth-form .input-group select {
+    width: 100%;
+    padding: .75rem 1rem .75rem 2.5rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: .5rem;
+    background-color: #fff;
+    appearance: none;
+}
+
+.auth-form button[type="submit"] {
+    margin-top: 1rem;
+    padding: .75rem;
+    width: 100%;
+    border: none;
+    border-radius: .75rem;
+    font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(90deg,#3b82f6,#2563eb);
+    cursor: pointer;
+    transition: opacity .2s;
+}
+
+    .auth-form button[type="submit"]:hover {
+        opacity: 0.9;
+    }
