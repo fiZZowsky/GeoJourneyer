@@ -32,7 +32,7 @@ else
                     @foreach (var vc in visited)
                     {
                         <li>
-                            @vc.Country
+                            @GetCountryName(vc.Country)
                             @if (vc.Status != CountryStatus.Living)
                             {
                                 <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
@@ -81,7 +81,7 @@ else
     {
         var uid = GetUserId();
         if (uid == null) return;
-        var payload = new UserCountryDto(0, uid.Value, country.Name, CountryStatus.Visited);
+        var payload = new UserCountryDto(0, uid.Value, country.IsoCode, CountryStatus.Visited);
         var id = await ApiClient.PostAsync<UserCountryDto, int>("api/user-countries", payload);
         if (id > 0)
         {
@@ -89,7 +89,7 @@ else
             ComputeToVisit();
             if (showGlobe)
             {
-                await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => v.Country).ToArray());
+                await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
             }
         }
     }
@@ -103,21 +103,26 @@ else
         ComputeToVisit();
         if (showGlobe)
         {
-            await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => v.Country).ToArray());
+            await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
         }
     }
 
     private void ComputeToVisit()
     {
         if (allCountries == null) return;
-        var visitedNames = visited.Select(v => v.Country).ToHashSet();
-        toVisit = allCountries.Where(c => !visitedNames.Contains(c.Name));
+        var visitedCodes = visited.Select(v => v.Country).ToHashSet();
+        toVisit = allCountries.Where(c => !visitedCodes.Contains(c.IsoCode));
+    }
+
+    private string GetCountryName(string isoCode)
+    {
+        return allCountries?.FirstOrDefault(c => c.IsoCode == isoCode)?.Name ?? isoCode;
     }
 
     private async Task ToggleView()
     {
         showGlobe = !showGlobe;
-        var visitedNames = visited.Select(v => v.Country).ToArray();
+        var visitedNames = visited.Select(v => GetCountryName(v.Country)).ToArray();
         if (showGlobe && !globeInit)
         {
             // LoadingService.Begin();
@@ -137,7 +142,7 @@ else
         {
             // LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("initGlobe", visited.Select(v => v.Country).ToArray(), objRef);
+            await JS.InvokeVoidAsync("initGlobe", visited.Select(v => GetCountryName(v.Country)).ToArray(), objRef);
             globeInit = true;
         }
     }
@@ -182,14 +187,17 @@ else
     [JSInvokable]
     public async Task ToggleCountry(string name)
     {
-        var existing = visited.FirstOrDefault(v => v.Country == name);
+        var iso = allCountries?.FirstOrDefault(c => c.Name == name)?.IsoCode;
+        if (iso == null) return;
+
+        var existing = visited.FirstOrDefault(v => v.Country == iso);
         if (existing != null)
         {
             await RemoveCountry(existing);
         }
         else
         {
-            var country = allCountries?.FirstOrDefault(c => c.Name == name);
+            var country = allCountries?.FirstOrDefault(c => c.IsoCode == iso);
             if (country != null)
             {
                 await AddCountry(country);
