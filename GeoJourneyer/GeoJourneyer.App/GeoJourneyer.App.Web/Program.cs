@@ -1,8 +1,10 @@
 using GeoJourneyer.App.Shared.Services;
 using GeoJourneyer.App.Web.Components;
 using GeoJourneyer.App.Web.Services;
+using DotNetEnv;
 using System.Net;
 
+Env.TraversePath().Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

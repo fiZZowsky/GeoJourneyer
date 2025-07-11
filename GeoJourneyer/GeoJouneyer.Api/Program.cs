@@ -1,12 +1,14 @@
-using GeoJourneyer.Infrastructure.Persistance;
+using GeoJouneyer.Api.Extensions;
 using GeoJourneyer.Application.Extensions;
 using GeoJourneyer.Infrastructure.Extensions;
-using Microsoft.OpenApi.Models;
+using GeoJourneyer.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddProjectConfiguration();
 
 var connectionString = builder.Configuration.GetConnectionString("Default") ??
     $"Data Source={Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "app.db")}";

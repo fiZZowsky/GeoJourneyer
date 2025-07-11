@@ -51,6 +51,7 @@ else
     private List<GooglePlace> searchResults = new();
     private List<GooglePlace> selectedPlaces = new();
     private DotNetObjectReference<PlanCreate>? objRef;
+    private bool mapInitialized;
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,10 +60,11 @@ else
 
     protected override async Task OnAfterRenderAsync(bool first)
     {
-        if (first)
+        if (!mapInitialized && countries != null && AuthState.IsLoggedIn)
         {
-            objRef = DotNetObjectReference.Create(this);
+            objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("planCreator.init", "planMap", "selectedList", objRef);
+            mapInitialized = true;
         }
     }
 
