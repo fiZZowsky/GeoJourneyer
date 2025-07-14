@@ -10,8 +10,7 @@
 
 <PageTitle>Countries</PageTitle>
 
-<h1>Countries</h1>
-<button class="view-toggle" @onclick="ToggleView">@(showGlobe ? "Show List" : "Show Globe")</button>
+@* <button class="view-toggle" @onclick="ToggleView">@(showGlobe ? "Show List" : "Show Globe")</button> *@
 
 @if (allCountries == null)
 {
@@ -23,7 +22,7 @@ else
     {
         <div id="globeContainer" style="width:100%; height:600px;"></div>
     }
-    else
+    @* else
     {
         <div class="countries-page">
             <div class="list">
@@ -54,7 +53,7 @@ else
                 </ul>
             </div>
         </div>
-   }
+   } *@
 }
 
 @code {
@@ -62,7 +61,7 @@ else
     private bool globeInit = false;
     private IEnumerable<CountryDto>? allCountries;
     private List<UserCountryDto> visited = new();
-    private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
+    // private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
     private DotNetObjectReference<Countries>? objRef;
 
     protected override async Task OnInitializedAsync()
@@ -74,7 +73,7 @@ else
             var list = await ApiClient.GetAsync<IEnumerable<UserCountryDto>>($"api/user-countries/{uid}");
             if (list != null) visited = list.ToList();
         }
-        ComputeToVisit();
+        // ComputeToVisit();
     }
 
     private async Task AddCountry(CountryDto country)
@@ -86,7 +85,7 @@ else
         if (id > 0)
         {
             visited.Add(payload with { Id = id });
-            ComputeToVisit();
+            // ComputeToVisit();
             if (showGlobe)
             {
                 await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
@@ -100,45 +99,45 @@ else
             return;
         await ApiClient.DeleteAsync<object>($"api/user-countries/{country.Id}");
         visited.Remove(country);
-        ComputeToVisit();
+        // ComputeToVisit();
         if (showGlobe)
         {
             await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
         }
     }
 
-    private void ComputeToVisit()
-    {
-        if (allCountries == null) return;
-        var visitedCodes = visited.Select(v => v.Country).ToHashSet();
-        toVisit = allCountries.Where(c => !visitedCodes.Contains(c.IsoCode));
-    }
+    // private void ComputeToVisit()
+    // {
+    //     if (allCountries == null) return;
+    //     var visitedCodes = visited.Select(v => v.Country).ToHashSet();
+    //     toVisit = allCountries.Where(c => !visitedCodes.Contains(c.IsoCode));
+    // }
 
     private string GetCountryName(string isoCode)
     {
         return allCountries?.FirstOrDefault(c => c.IsoCode == isoCode)?.Name ?? isoCode;
     }
 
-    private async Task ToggleView()
-    {
-        showGlobe = !showGlobe;
-        var visitedNames = visited.Select(v => GetCountryName(v.Country)).ToArray();
-        if (showGlobe && !globeInit)
-        {
-            // LoadingService.Begin();
-            objRef ??= DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
-            globeInit = true;
-        }
-        else if (showGlobe)
-        {
-            await JS.InvokeVoidAsync("updateVisitedCountries", visitedNames);
-        }
-    }
+    // private async Task ToggleView()
+    // {
+    //     showGlobe = !showGlobe;
+    //     var visitedNames = visited.Select(v => GetCountryName(v.Country)).ToArray();
+    //     if (showGlobe && !globeInit)
+    //     {
+    //         // LoadingService.Begin();
+    //         objRef ??= DotNetObjectReference.Create(this);
+    //         await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
+    //         globeInit = true;
+    //     }
+    //     else if (showGlobe)
+    //     {
+    //         await JS.InvokeVoidAsync("updateVisitedCountries", visitedNames);
+    //     }
+    // }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (showGlobe && !globeInit)
+        if (firstRender && showGlobe && OperatingSystem.IsBrowser())
         {
             // LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
