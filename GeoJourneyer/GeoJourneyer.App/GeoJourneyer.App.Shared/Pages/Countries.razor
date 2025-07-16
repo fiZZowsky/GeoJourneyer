@@ -137,7 +137,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && showGlobe && OperatingSystem.IsBrowser())
+        if (firstRender && showGlobe)
         {
             // LoadingService.Begin();
             objRef ??= DotNetObjectReference.Create(this);
