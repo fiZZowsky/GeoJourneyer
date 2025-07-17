@@ -38,7 +38,7 @@ window.initGlobe = function (visited, dotNetHelper) {
     };
 
     if (!window.countriesData) {
-        fetch('_content/GeoJourneyer.App.Shared/countries-50m.json')
+        fetch('countries-50m.json')
             .then(res => res.json())
             .then(worldData => {
                 const countries = window.topojson.feature(worldData, worldData.objects.countries).features;

@@ -10,58 +10,19 @@
 
 <PageTitle>Countries</PageTitle>
 
-@* <button class="view-toggle" @onclick="ToggleView">@(showGlobe ? "Show List" : "Show Globe")</button> *@
-
 @if (allCountries == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @if (showGlobe)
-    {
-        <div id="globeContainer" style="width:100%; height:600px;"></div>
-    }
-    @* else
-    {
-        <div class="countries-page">
-            <div class="list">
-                <h2>Visited</h2>
-                <ul>
-                    @foreach (var vc in visited)
-                    {
-                        <li>
-                            @GetCountryName(vc.Country)
-                            @if (vc.Status != CountryStatus.Living)
-                            {
-                                <button class="remove-btn" @onclick="() => RemoveCountry(vc)">Remove</button>
-                            }
-                        </li>
-                    }
-                </ul>
-            </div>
-            <div class="list">
-                <h2>To Visit</h2>
-                <ul>
-                    @foreach (var c in toVisit)
-                    {
-                        <li>
-                            @c.Name
-                            <button @onclick="() => AddCountry(c)">Add</button>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-   } *@
+    <div id="globeContainer" style="width:100%; height:600px;"></div>
 }
 
 @code {
-    private bool showGlobe = true;
-    private bool globeInit = false;
+    private bool _globeInitialized;
     private IEnumerable<CountryDto>? allCountries;
     private List<UserCountryDto> visited = new();
-    // private IEnumerable<CountryDto> toVisit = Enumerable.Empty<CountryDto>();
     private DotNetObjectReference<Countries>? objRef;
 
     protected override async Task OnInitializedAsync()
@@ -73,7 +34,6 @@ else
             var list = await ApiClient.GetAsync<IEnumerable<UserCountryDto>>($"api/user-countries/{uid}");
             if (list != null) visited = list.ToList();
         }
-        // ComputeToVisit();
     }
 
     private async Task AddCountry(CountryDto country)
@@ -85,11 +45,7 @@ else
         if (id > 0)
         {
             visited.Add(payload with { Id = id });
-            // ComputeToVisit();
-            if (showGlobe)
-            {
-                await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
-            }
+            await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
         }
     }
 
@@ -99,50 +55,22 @@ else
             return;
         await ApiClient.DeleteAsync<object>($"api/user-countries/{country.Id}");
         visited.Remove(country);
-        // ComputeToVisit();
-        if (showGlobe)
-        {
-            await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
-        }
+        await JS.InvokeVoidAsync("updateVisitedCountries", visited.Select(v => GetCountryName(v.Country)).ToArray());
     }
-
-    // private void ComputeToVisit()
-    // {
-    //     if (allCountries == null) return;
-    //     var visitedCodes = visited.Select(v => v.Country).ToHashSet();
-    //     toVisit = allCountries.Where(c => !visitedCodes.Contains(c.IsoCode));
-    // }
 
     private string GetCountryName(string isoCode)
     {
         return allCountries?.FirstOrDefault(c => c.IsoCode == isoCode)?.Name ?? isoCode;
     }
 
-    // private async Task ToggleView()
-    // {
-    //     showGlobe = !showGlobe;
-    //     var visitedNames = visited.Select(v => GetCountryName(v.Country)).ToArray();
-    //     if (showGlobe && !globeInit)
-    //     {
-    //         // LoadingService.Begin();
-    //         objRef ??= DotNetObjectReference.Create(this);
-    //         await JS.InvokeVoidAsync("initGlobe", visitedNames, objRef);
-    //         globeInit = true;
-    //     }
-    //     else if (showGlobe)
-    //     {
-    //         await JS.InvokeVoidAsync("updateVisitedCountries", visitedNames);
-    //     }
-    // }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && showGlobe)
+        if (!_globeInitialized && allCountries != null)
         {
             // LoadingService.Begin();
+            _globeInitialized = true;
             objRef ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initGlobe", visited.Select(v => GetCountryName(v.Country)).ToArray(), objRef);
-            globeInit = true;
         }
     }
 
